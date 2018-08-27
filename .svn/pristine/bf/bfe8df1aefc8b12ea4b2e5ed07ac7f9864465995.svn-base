@@ -1,0 +1,17 @@
+package com.jz.quoteoperation.dict.service;
+
+import com.jz.quoteoperation.common.constant.CommonConstants;
+import com.jz.quoteoperation.dict.bo.KVMap;
+import com.jz.quoteoperation.dict.po.DictInfo;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+
+import java.util.List;
+
+public interface DictService {
+    public List<KVMap> getDictMapList(String dictCode);
+    @Cacheable(CommonConstants.DICT_CACHE)
+    public List<DictInfo> selectDictAllByCode(String dictCode);
+    @CachePut(value = CommonConstants.DICT_CACHE, key = "#result.dictCd")
+    public DictInfo insert(DictInfo record);
+}

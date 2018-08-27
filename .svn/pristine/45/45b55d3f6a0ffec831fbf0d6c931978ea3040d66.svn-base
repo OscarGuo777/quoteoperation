@@ -1,0 +1,19 @@
+package com.jz.quoteoperation.common.constant;
+
+/**
+ * 公共常量类
+ */
+public class CommonConstants {
+    /**
+     * 缓存对象命名常量
+     */
+    public static final String DICT_CACHE = "DICT_CACHE";//数据字典缓存对象名
+
+    /** 缓存对象命名常量END **/
+    /**
+     * 数据字典code常量
+     */
+    public static final String IS_NO = "IS_NO";//是否标志 1.是 0.否
+
+    /** 数据字典code常量END **/
+}

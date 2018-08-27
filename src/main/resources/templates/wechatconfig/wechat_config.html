@@ -1,0 +1,80 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <script type="text/javascript" src="../../static/js/jquery-3.3.1.min.js" th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script type="text/javascript" src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" src="../../static/js/bootstrapValidator.js" th:src="@{/js/bootstrapValidator.js}"></script>
+    <script type="text/javascript" src="../../static/js/jquery.validate.js" th:src="@{/js/jquery.validate.js}"></script>
+    <link type="text/css" href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+    <title></title>
+
+    <style>
+        /*web background*/
+        .container{
+            display:table;
+            height:100%;
+        }
+
+        .row{
+            display: table-cell;
+            vertical-align: middle;
+        }
+        /* centered columns styles */
+        .row-centered {
+            text-align:center;
+        }
+        .col-centered {
+            display:inline-block;
+            float:none;
+            text-align:left;
+            margin-right:-4px;
+        }
+        input.error{border: 1px dotted red;}
+        label.error{
+           // background-image:url('del.gif');
+            background-repeat:no-repeat;
+            padding-left:18px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>微信配置</h2>
+    <form  th:action="@{/wechatConfigController/saveorupdate}"  method="post" id="form">
+        <div class="form-group">
+            <label for="appKey">APP_KEY:</label>
+            <input type="hidden" id="lgcSn" name="lgcSn" th:value="${lgcSn}">
+            <input type="text" class="form-control required"  name="appKey" id="appKey" placeholder="appKey" th:value="${appKey}">
+            <label for="appKey"  class="error">APP_KEY不能为空</label>
+        </div>
+        <div class="form-group">
+            <label for="appSercet">APP_SERCET:</label>
+            <input type="text" name="appSercet" class="form-control required" id="appSercet" placeholder="开发者密码" th:value="${appSercet}">
+            <label for="appSercet" class="error">开发者密码不能为空</label>
+        </div>
+        <div class="form-group">
+            <label for="followWelcoming">关注欢迎语:</label>
+            <input type="text" name="followWelcoming" class="form-control required" id="followWelcoming" placeholder="关注欢迎语" th:value="${followWelcoming}">
+            <label for="followWelcoming" class="error">关注欢迎语不能为空</label>
+        </div>
+      <button type="button" class="btn btn-primary" id="tj">提交</button>
+       <!--<input type="submit" class="btn btn-primary" value="提交">-->
+    </form>
+</div>
+
+</body>
+
+<script>
+    $(function(){
+        $("#form").validate();
+    });
+    $("#tj").click(function(){
+       /* if(){
+
+        }*/
+       //alert("111");
+        $("#form").submit();
+    });
+</script>
+</html>

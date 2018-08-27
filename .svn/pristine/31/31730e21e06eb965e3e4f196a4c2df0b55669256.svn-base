@@ -1,0 +1,31 @@
+package com.jz.quoteoperation.common.atch_info.service;
+
+
+/**
+ *
+ * 　　 ┏┓   ┏┓
+ * 　　┏┛┻━━━┛┻┓
+ * 　　┃       ┃
+ * 　　┃   ━   ┃
+ * 　　┃ ┳┛ ┗┳ ┃
+ * 　　┃       ┃
+ * 　　┃   ┻   ┃
+ * 　　┃       ┃
+ * 　　┗━┓   ┏━┛
+ * 　　  ┃   ┃
+ * 　　  ┃   ┃  　　
+ * 　　  ┃   ┗━━━┓
+ * 　　  ┃       ┣┓
+ * 　　  ┃       ┏┛
+ * 　　  ┗┓┓┏━┳┓┏┛
+ * 　　   ┃┫┫ ┃┫┫
+ * 　　   ┗┻┛ ┗┻┛
+ * @author 张成
+ * @date    2018/8/14
+ */
+
+
+public interface AtchInfoService {
+
+
+}

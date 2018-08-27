@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jz.quoteoperation.user.dao.UserInfoMapper">
+  <resultMap id="BaseResultMap" type="com.jz.quoteoperation.user.po.UserInfo">
+    <result column="LGC_SN" jdbcType="INTEGER" property="lgcSn" />
+    <result column="OPEN_ID" jdbcType="VARCHAR" property="openId" />
+    <result column="USR_ACNT" jdbcType="VARCHAR" property="usrAcnt" />
+    <result column="USR_PWD" jdbcType="VARCHAR" property="usrPwd" />
+    <result column="USR_NM" jdbcType="VARCHAR" property="usrNm" />
+    <result column="USR_MOBI" jdbcType="VARCHAR" property="usrMobi" />
+    <result column="STATUS" jdbcType="CHAR" property="status" />
+    <result column="CRT_DT" jdbcType="DATE" property="crtDt" />
+    <result column="CRT_USR_ID" jdbcType="INTEGER" property="crtUsrId" />
+    <result column="UPD_DT" jdbcType="DATE" property="updDt" />
+    <result column="UPD_USR_ID" jdbcType="INTEGER" property="updUsrId" />
+  </resultMap>
+
+  <resultMap id="UserDepartBoMap" type="com.jz.quoteoperation.user.bo.UserDepartBO">
+    <result column="LGC_SN" jdbcType="INTEGER" property="lgcSn" />
+    <result column="OPEN_ID" jdbcType="VARCHAR" property="openId" />
+    <result column="USR_ACNT" jdbcType="VARCHAR" property="usrAcnt" />
+    <result column="USR_PWD" jdbcType="VARCHAR" property="usrPwd" />
+    <result column="USR_NM" jdbcType="VARCHAR" property="usrNm" />
+    <result column="USR_MOBI" jdbcType="VARCHAR" property="usrMobi" />
+    <result column="STATUS" jdbcType="CHAR" property="status" />
+    <result column="CRT_DT" jdbcType="DATE" property="crtDt" />
+    <result column="CRT_USR_ID" jdbcType="INTEGER" property="crtUsrId" />
+    <result column="UPD_DT" jdbcType="DATE" property="updDt" />
+    <result column="UPD_USR_ID" jdbcType="INTEGER" property="updUsrId" />
+    <result column="DEPT_NM" jdbcType="VARCHAR" property="deptNm"/>
+  </resultMap>
+
+
+    <resultMap id="UserInfoBoMap" type="com.jz.quoteoperation.user.bo.UserInfoBO">
+        <result column="LGC_SN" jdbcType="INTEGER" property="lgcSn"></result>
+        <result column="OPEN_ID" jdbcType="VARCHAR" property="openId"></result>
+        <result column="USR_ACNT" jdbcType="VARCHAR" property="usrAcnt"></result>
+        <result column="USR_PWD" jdbcType="VARCHAR" property="usrPwd"></result>
+        <result column="USR_NM" jdbcType="VARCHAR" property="usrNm"></result>
+        <result column="USR_MOBI" jdbcType="VARCHAR" property="usrMobi"></result>
+        <result column="STATUS" jdbcType="CHAR" property="status"></result>
+        <collection property="role_list" ofType="com.jz.quoteoperation.role.bo.RoleInfoBO" javaType="ArrayList" resultMap="RoleInfoBoMap"></collection>
+    </resultMap>
+
+    <resultMap id="RoleInfoBoMap" type="com.jz.quoteoperation.role.bo.RoleInfoBO">
+        <result column="ROLE_NM" jdbcType="VARCHAR" property="roleNm"></result>
+        <result column="STATUS" jdbcType="CHAR" property="status"></result>
+        <collection property="auth_list" ofType="com.jz.quoteoperation.auth.bo.AuthInfoBO" javaType="ArrayList" resultMap="AuthInfoBoMap"></collection>
+    </resultMap>
+
+    <resultMap id="AuthInfoBoMap" type="com.jz.quoteoperation.auth.bo.AuthInfoBO">
+        <result column="AUTH_CD" jdbcType="VARCHAR" property="authCd"></result>
+        <result column="AUTH_NM" jdbcType="VARCHAR" property="authNm"></result>
+        <result column="STATUS" jdbcType="CHAR" property="status"></result>
+    </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    LGC_SN, OPEN_ID, USR_ACNT, USR_PWD, USR_NM, USR_MOBI, STATUS, CRT_DT, CRT_USR_ID,
+    UPD_DT, UPD_USR_ID
+  </sql>
+  <select id="selectByExample" parameterType="com.jz.quoteoperation.user.po.UserInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from qo_user_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+
+  <select id="queryAllUser" resultMap="UserDepartBoMap">
+    SELECT u.LGC_SN,u.USR_ACNT,u.USR_NM,u.USR_MOBI,u.STATUS,u.CRT_DT,u.CRT_USR_ID,d.DEPT_NM
+    FROM qo_user_info u
+    INNER JOIN qo_user_dept ud ON u.LGC_SN = ud.USR_SN
+    INNER JOIN qo_dept_info d ON ud.DEPT_SN = d.LGC_SN
+  </select>
+
+  <select id="selectUserByKeyword" parameterType="map" resultMap="BaseResultMap">
+      SELECT * FROM qo_user_info
+      <where>
+        <if test=" status != ''">
+          AND status = #{status}
+        </if>
+        <if test="keyword != null">
+          AND (
+          USR_ACNT  LIKE  CONCAT ('%',TRIM(#{keyword}),'%')
+          OR  USR_MOBI LIKE  CONCAT ('%',TRIM(#{keyword}),'%')
+          OR  USR_NM LIKE  CONCAT ('%',TRIM(#{keyword}),'%')
+          )
+        </if>
+      </where>
+  </select>
+
+    <select id="queryUserAuth" parameterType="Integer" resultMap="UserInfoBoMap">
+        SELECT
+            U.LGC_SN,
+            U.OPEN_ID,
+            U.USR_ACNT,
+            U.USR_PWD,
+            U.USR_NM,
+            U.USR_MOBI,
+            U.STATUS,
+            RI.STATUS,
+            RI.ROLE_NM,
+            AI.AUTH_CD,
+            AI.AUTH_NM,
+            AI.STATUS
+        FROM
+	        (
+		SELECT
+			LGC_SN,OPEN_ID,USR_ACNT,USR_PWD,USR_NM,USR_MOBI,STATUS
+		FROM
+			qo_user_info
+		WHERE
+			LGC_SN = #{id}
+        ) U
+        INNER JOIN qo_user_role UR ON U.LGC_SN = UR.USR_SN
+        INNER JOIN qo_role_info RI ON UR.ROLE_SN = RI.LGC_SN
+        INNER JOIN qo_role_auth RA ON UR.ROLE_SN = RA.ROLE_SN
+        INNER JOIN qo_auth_info AI ON RA.AUTH_SN = AI.LGC_SN
+    </select>
+
+
+
+  <delete id="deleteByExample" parameterType="com.jz.quoteoperation.user.po.UserInfoExample">
+    delete from qo_user_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.jz.quoteoperation.user.po.UserInfo" useGeneratedKeys="true" keyProperty="lgcSn">
+    insert into qo_user_info (LGC_SN, OPEN_ID, USR_ACNT,
+      USR_PWD, USR_NM, USR_MOBI,
+      STATUS, CRT_DT, CRT_USR_ID,
+      UPD_DT, UPD_USR_ID)
+    values (#{lgcSn,jdbcType=INTEGER}, #{openId,jdbcType=VARCHAR}, #{usrAcnt,jdbcType=VARCHAR},
+      #{usrPwd,jdbcType=VARCHAR}, #{usrNm,jdbcType=VARCHAR}, #{usrMobi,jdbcType=VARCHAR},
+      #{status,jdbcType=CHAR}, #{crtDt,jdbcType=DATE}, #{crtUsrId,jdbcType=INTEGER},
+      #{updDt,jdbcType=DATE}, #{updUsrId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.jz.quoteoperation.user.po.UserInfo">
+    insert into qo_user_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="lgcSn != null">
+        LGC_SN,
+      </if>
+      <if test="openId != null">
+        OPEN_ID,
+      </if>
+      <if test="usrAcnt != null">
+        USR_ACNT,
+      </if>
+      <if test="usrPwd != null">
+        USR_PWD,
+      </if>
+      <if test="usrNm != null">
+        USR_NM,
+      </if>
+      <if test="usrMobi != null">
+        USR_MOBI,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="crtDt != null">
+        CRT_DT,
+      </if>
+      <if test="crtUsrId != null">
+        CRT_USR_ID,
+      </if>
+      <if test="updDt != null">
+        UPD_DT,
+      </if>
+      <if test="updUsrId != null">
+        UPD_USR_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="lgcSn != null">
+        #{lgcSn,jdbcType=INTEGER},
+      </if>
+      <if test="openId != null">
+        #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="usrAcnt != null">
+        #{usrAcnt,jdbcType=VARCHAR},
+      </if>
+      <if test="usrPwd != null">
+        #{usrPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="usrNm != null">
+        #{usrNm,jdbcType=VARCHAR},
+      </if>
+      <if test="usrMobi != null">
+        #{usrMobi,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=CHAR},
+      </if>
+      <if test="crtDt != null">
+        #{crtDt,jdbcType=DATE},
+      </if>
+      <if test="crtUsrId != null">
+        #{crtUsrId,jdbcType=INTEGER},
+      </if>
+      <if test="updDt != null">
+        #{updDt,jdbcType=DATE},
+      </if>
+      <if test="updUsrId != null">
+        #{updUsrId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.jz.quoteoperation.user.po.UserInfoExample" resultType="java.lang.Long">
+    select count(*) from qo_user_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update qo_user_info
+    <set>
+      <if test="record.lgcSn != null">
+        LGC_SN = #{record.lgcSn,jdbcType=INTEGER},
+      </if>
+      <if test="record.openId != null">
+        OPEN_ID = #{record.openId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.usrAcnt != null">
+        USR_ACNT = #{record.usrAcnt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.usrPwd != null">
+        USR_PWD = #{record.usrPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.usrNm != null">
+        USR_NM = #{record.usrNm,jdbcType=VARCHAR},
+      </if>
+      <if test="record.usrMobi != null">
+        USR_MOBI = #{record.usrMobi,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        STATUS = #{record.status,jdbcType=CHAR},
+      </if>
+      <if test="record.crtDt != null">
+        CRT_DT = #{record.crtDt,jdbcType=DATE},
+      </if>
+      <if test="record.crtUsrId != null">
+        CRT_USR_ID = #{record.crtUsrId,jdbcType=INTEGER},
+      </if>
+      <if test="record.updDt != null">
+        UPD_DT = #{record.updDt,jdbcType=DATE},
+      </if>
+      <if test="record.updUsrId != null">
+        UPD_USR_ID = #{record.updUsrId,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update qo_user_info
+    set LGC_SN = #{record.lgcSn,jdbcType=INTEGER},
+      OPEN_ID = #{record.openId,jdbcType=VARCHAR},
+      USR_ACNT = #{record.usrAcnt,jdbcType=VARCHAR},
+      USR_PWD = #{record.usrPwd,jdbcType=VARCHAR},
+      USR_NM = #{record.usrNm,jdbcType=VARCHAR},
+      USR_MOBI = #{record.usrMobi,jdbcType=VARCHAR},
+      STATUS = #{record.status,jdbcType=CHAR},
+      CRT_DT = #{record.crtDt,jdbcType=DATE},
+      CRT_USR_ID = #{record.crtUsrId,jdbcType=INTEGER},
+      UPD_DT = #{record.updDt,jdbcType=DATE},
+      UPD_USR_ID = #{record.updUsrId,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.jz.quoteoperation.user.po.UserInfo">
+      UPDATE qo_user_info
+      SET USR_ACNT = #{usrAcnt},USR_MOBI = #{usrMobi},USR_NM = #{usrNm},STATUS = #{status}
+      WHERE LGC_SN = #{lgcSn}
+  </update>
+
+</mapper>

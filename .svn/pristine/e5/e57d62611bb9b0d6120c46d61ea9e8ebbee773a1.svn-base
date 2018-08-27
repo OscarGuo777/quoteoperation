@@ -1,0 +1,29 @@
+package com.jz.quoteoperation.common.atch_info.controller;
+
+
+/**
+ *
+ * 　　 ┏┓   ┏┓
+ * 　　┏┛┻━━━┛┻┓
+ * 　　┃       ┃
+ * 　　┃   ━   ┃
+ * 　　┃ ┳┛ ┗┳ ┃
+ * 　　┃       ┃
+ * 　　┃   ┻   ┃
+ * 　　┃       ┃
+ * 　　┗━┓   ┏━┛
+ * 　　  ┃   ┃
+ * 　　  ┃   ┃  　　
+ * 　　  ┃   ┗━━━┓
+ * 　　  ┃       ┣┓
+ * 　　  ┃       ┏┛
+ * 　　  ┗┓┓┏━┳┓┏┛
+ * 　　   ┃┫┫ ┃┫┫
+ * 　　   ┗┻┛ ┗┻┛
+ * @author 张成
+ * @date    2018/8/14
+ */
+
+
+public class AtchInfoController {
+}

@@ -1,0 +1,4 @@
+package com.jz.quoteoperation.auth.po;
+
+public class AuthInfo {
+}

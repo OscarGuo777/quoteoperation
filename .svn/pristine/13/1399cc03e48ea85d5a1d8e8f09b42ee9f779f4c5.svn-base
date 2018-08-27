@@ -1,0 +1,4 @@
+package com.jz.quoteoperation.dict.service;
+
+public interface DictService {
+}

@@ -1,0 +1,15 @@
+package com.jz.quoteoperation.user.service;
+
+
+
+import com.jz.quoteoperation.user.po.UserInfo;
+import com.jz.quoteoperation.user.po.UserInfoExample;
+
+import java.util.List;import com.jz.quoteoperation.user.bo.UserInfoBO;
+
+
+public interface UserService {
+    List<UserInfo> selectByExample(UserInfoExample example);
+
+    UserInfoBO loadUserInfoByAccnt(String user_accnt);
+}

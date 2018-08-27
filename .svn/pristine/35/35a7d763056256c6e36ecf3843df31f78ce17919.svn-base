@@ -1,0 +1,9 @@
+body{
+    width: 90%;
+    margin-left: 5%;
+}
+
+.publicinfotext{
+    min-height: 200px;
+    width: 100%;
+}

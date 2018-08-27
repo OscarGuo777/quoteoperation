@@ -1,0 +1,54 @@
+package com.jz.quoteoperation.common.controller;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+
+/**
+ * Created by hp on 2015/9/7.
+ */
+public class ResultMap extends HashMap{
+
+    public ResultMap(){
+        this.put("status", HttpServletResponse.SC_OK);
+    }
+
+    public ResultMap(Object data){
+        this();
+        this.setData(data);
+    }
+
+    public ResultMap(Object data, long totalCount){
+        this.init(data, totalCount, HttpServletResponse.SC_OK);
+    }
+
+    public ResultMap(Object data, long totalCount, int status){
+        this.init(data, totalCount, status);
+    }
+
+    private void init(Object data, long totalCount, long status){
+        this.setData(data);
+        this.setTotalCount(totalCount);
+        this.setStatus(status);
+    }
+
+    public void setData(Object data){
+        this.put("data", data);
+    }
+
+    public void setTotalCount(long count){
+        this.put("totalCount", count);
+    }
+
+    public void setStatus(long status){
+        this.put("status", status);
+    }
+
+    public void setError(String error) {
+        this.put("error", error);
+    }
+
+    public int getStatus() {
+        return (Integer) this.get("status");
+    }
+
+}

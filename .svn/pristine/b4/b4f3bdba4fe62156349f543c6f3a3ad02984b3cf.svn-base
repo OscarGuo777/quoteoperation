@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<!-- 　　 ┏┓   ┏┓-->
+<!-- 　　┏┛┻━━━┛┻┓-->
+<!-- 　　┃       ┃-->
+<!-- 　　┃   ━   ┃-->
+<!-- 　　┃ ┳┛ ┗┳ ┃-->
+<!-- 　　┃       ┃-->
+<!-- 　　┃   ┻   ┃-->
+<!-- 　　┃       ┃-->
+<!-- 　　┗━┓   ┏━┛-->
+<!-- 　　  ┃   ┃-->
+<!-- 　　  ┃   ┃  　　-->
+<!-- 　　  ┃   ┗━━━┓-->
+<!-- 　　  ┃       ┣┓-->
+<!-- 　　  ┃       ┏┛-->
+<!-- 　　  ┗┓┓┏━┳┓┏┛-->
+<!-- 　　   ┃┫┫ ┃┫┫-->
+<!-- 　　   ┗┻┛ ┗┻┛-->
+<!-- @author 张成-->
+<!-- @date    2018/8/15-->
+
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script type="text/javascript" src="../../static/js/bootstrap-table.js" th:src="@{/js/bootstrap-table.js}"></script>
+<script type="text/javascript" src="../../static/js/bootstrap-table-zh-CN.js"
+        th:src="@{/js/bootstrap-table-zh-CN.js}"></script>
+<!--时间控件-->
+<script type="text/javascript" src="../../static/js/bootstrap-datetimepicker.min.js"
+        th:src="@{/js/bootstrap-datetimepicker.min.js}"></script>
+<!--格式化时间-->
+<script type="text/javascript" src="../../static/js/moment-with-locales.js"
+        th:src="@{/js/moment-with-locales.js}"></script>
+<script type="text/javascript" src="../../static/js/suggestion/suggestionList.js"
+        th:src="@{/js/suggestion/suggestionList.js}"></script>
+
+
+<link type="text/css" href="../../static/css/bootstrap-datetimepicker.min.css"
+      th:href="@{/css/bootstrap-datetimepicker.min.css}" rel="stylesheet"/>
+<link type="text/css" href="../../static/css/suggestion/suggestion.css" th:href="@{/css/suggestion/suggestion.css}"
+      rel="stylesheet"/>
+<!--toastr弹窗工具-->
+<script type="text/javascript" src="../../static/js/toastr.js" th:src="@{/js/toastr.js}"></script>
+<link type="text/css" href="../../static/css/toastr.css" th:href="@{/css/toastr.css}" rel="stylesheet"/>
+
+
+<title th:text="${title}"></title>
+</head>
+
+<script>
+
+    $(function () {
+        //初始化时间控件
+        Datetime();
+        //初始化表格
+        loadtable();
+        //ajax加载数据
+        loaddata();
+        //初始化点击查看信息概况方法
+        // xingxi();
+    });
+
+
+</script>
+<body>
+<div>
+    <div><span sec:authentication="principal.username" id="username" style="display: none;"></span></div>
+    <div><span sec:authentication="principal.authorities" id="authorities" style="display: none;"></span></div>
+    <input type="text" id="suggestiontype" style="display: none;" th:value="${suggestiontype}">
+
+    <div>
+        <div style="height: 60px;">
+            <span>发布日期:&nbsp;</span>
+            <input id="suggestionquery1" type="text" style="height: 40px;margin-top: 5px;">
+
+            <input id="suggestionquery2" type="text" style="height: 40px;margin-top: 5px;">
+
+            <button type="button" class="btn btn-primary" onclick="loaddata()">查询</button>
+            <!-- 新增按钮触发模态框 -->
+            <button class="btn btn-primary" data-toggle="modal" data-target="#myModal"
+                    th:text="${button}" onclick="changestyle()"></button>
+            <!-- 新增模态框（Modal） -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <!--模态窗标题-->
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel" th:text="${title}"></h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                            </button>
+                        </div>
+                        <!--模态窗内容-->
+                        <div class="modal-body" style="height: 400px;overflow-y:scroll;">
+                            <div id="fileup">
+                                <div style="margin-top: 2%;">
+                                    <p>内容 : </p>
+                                    <textarea id="sginCntnt" name="sginCntnt"
+                                              style="width: 80%;margin-left: 12%;height: 150px;"></textarea>
+                                </div>
+                                <div style="margin-top: 2%;">
+                                    <input type="text" id="atchInfos" name="atchInfos" style="display: none;">
+                                    <form id="uploadForm" method="post" enctype="multipart/form-data">
+                                        <p>附件 : </p>
+                                        <input type="file" name="files" accept="image/*" multiple="multiple"
+                                               onclick="uploadImg()" style="width: 40%;margin-left: 5%;"/>
+                                        <input type="button" onclick="upfile()" value="上传"/>
+                                    </form>
+                                </div>
+                            </div>
+                            <div id="fileshow" style="display: none;">
+                                <p>内容：</p>
+                                <textarea id="sgtnCntnt" style="width: 100%;height: 200px;" readonly></textarea>
+                                <div id="glyff">
+                                <p>管理员回复：</p>
+                                <textarea id="rplyCntnt" style="width: 100%;height: 200px;" readonly></textarea>
+                                </div>
+                                <div id="suggestionatchInfos" style="margin: 5px auto;">
+                                </div>
+                            </div>
+                        </div>
+                        <!--模态窗提交返回按钮-->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" th:text="${button}" class="btn btn-default"
+                                    onclick="adddata()" data-dismiss="modal"></button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+        </div>
+    </div>
+    <!--表单-->
+    <div class="table-responsive">
+        <table id="suggestiontable">
+        </table>
+    </div>
+
+    <!--<div style="margin-top: 0%">-->
+        <!--<textarea id="suggestiontext" readonly class="suggestiontext"></textarea>-->
+    <!--</div>-->
+</div>
+</body>
+</html>

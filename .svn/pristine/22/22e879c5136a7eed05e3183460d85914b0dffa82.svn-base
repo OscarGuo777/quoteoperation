@@ -1,0 +1,66 @@
+package com.jz.quoteoperation.common.atchinfo.po;
+
+import java.util.Date;
+
+
+public class AttachRlinInfo {
+    private Integer lgcSn;
+
+    private Integer atchSn;
+
+    private Integer bsSn;
+
+    private String bsTpcd;
+
+    private Date crtDt;
+
+    private Integer crtUsrId;
+
+    public Integer getLgcSn() {
+        return lgcSn;
+    }
+
+    public void setLgcSn(Integer lgcSn) {
+        this.lgcSn = lgcSn;
+    }
+
+    public Integer getAtchSn() {
+        return atchSn;
+    }
+
+    public void setAtchSn(Integer atchSn) {
+        this.atchSn = atchSn;
+    }
+
+    public Integer getBsSn() {
+        return bsSn;
+    }
+
+    public void setBsSn(Integer bsSn) {
+        this.bsSn = bsSn;
+    }
+
+    public String getBsTpcd() {
+        return bsTpcd;
+    }
+
+    public void setBsTpcd(String bsTpcd) {
+        this.bsTpcd = bsTpcd == null ? null : bsTpcd.trim();
+    }
+
+    public Date getCrtDt() {
+        return crtDt;
+    }
+
+    public void setCrtDt(Date crtDt) {
+        this.crtDt = crtDt;
+    }
+
+    public Integer getCrtUsrId() {
+        return crtUsrId;
+    }
+
+    public void setCrtUsrId(Integer crtUsrId) {
+        this.crtUsrId = crtUsrId;
+    }
+}

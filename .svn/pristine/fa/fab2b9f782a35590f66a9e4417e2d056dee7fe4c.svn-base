@@ -1,0 +1,22 @@
+package com.jz.quoteoperation.common.atch_info.dao;
+
+import com.jz.quoteoperation.common.atch_info.po.atchInfo;
+import com.jz.quoteoperation.common.atch_info.po.atchInfoExample;
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
+
+public interface atchInfoMapper {
+    long countByExample(atchInfoExample example);
+
+    int deleteByExample(atchInfoExample example);
+
+    int insert(atchInfo record);
+
+    int insertSelective(atchInfo record);
+
+    List<atchInfo> selectByExample(atchInfoExample example);
+
+    int updateByExampleSelective(@Param("record") atchInfo record, @Param("example") atchInfoExample example);
+
+    int updateByExample(@Param("record") atchInfo record, @Param("example") atchInfoExample example);
+}

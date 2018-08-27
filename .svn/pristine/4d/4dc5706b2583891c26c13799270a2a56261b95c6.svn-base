@@ -1,0 +1,8 @@
+package com.jz.quoteoperation.dictdetail.service.impl;
+
+import com.jz.quoteoperation.dictdetail.service.DictDetailService;
+import org.springframework.stereotype.Service;
+
+@Service(value = "dictDetailService")
+public class DictDetailServiceImpl implements DictDetailService {
+}

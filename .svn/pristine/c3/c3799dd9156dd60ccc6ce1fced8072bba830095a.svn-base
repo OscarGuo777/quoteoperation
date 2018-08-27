@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title sec:authentication="name"></title>
+    <script type="text/javascript" th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/popper.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/vue.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/vue-router.min.js}"></script>
+    <link type="text/css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+    <style type="text/css">
+        body {
+            padding-top: 50px;
+        }
+    </style>
+</head>
+<body>
+<div id="mainroute">
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="#">QO</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#vueapp" aria-controls="vueapp" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="vueapp">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">主页 <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="loadPage('demo1')">版本库管理</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="loadPage('demo2')">通知与参考资料</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="loadPage('demo2')">意见管理</a>
+            </li>
+            <!-- Dropdown -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                    系统管理
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">权限管理</a>
+                    <a class="dropdown-item" href="#">角色管理</a>
+                    <a class="dropdown-item" href="#">用户管理</a>
+                    <a class="dropdown-item" href="#">数据字典</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<main role="main">
+    <div><span sec:authentication="principal.username"></span></div>
+    <div><span sec:authentication="principal.authorities"></span></div>
+    <div class="container" id="content">
+
+    </div> <!-- /container -->
+
+</main>
+
+<footer class="container">
+    <p>&copy; Company 2017-2018</p>
+</footer>
+</div>
+<script>
+    $(document).ready(function(){
+        $("#content").load("demo1");
+    });
+
+    function loadPage(url) {
+        $("#content").load(url);
+    }
+</script>
+</body>
+</html>

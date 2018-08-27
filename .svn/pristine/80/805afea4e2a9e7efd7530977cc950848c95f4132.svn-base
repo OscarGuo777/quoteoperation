@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script type="text/javascript" th:src="@{/js/bootstrap-table.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap-table-zh-CN.js}"></script>
+    <!--格式化时间-->
+    <script type="text/javascript" th:src="@{/js/moment-with-locales.js}"></script>
+    <script type="text/javascript" th:src="@{/js/user/user.js}"></script>
+    <link type="text/css"  th:href="@{/css/bootstrap-datetimepicker.min.css}" rel="stylesheet"/>
+    <link type="text/css" href="../../static/css/suggestion/suggestion.css" th:href="@{/css/suggestion/suggestion.css}"
+          rel="stylesheet"/>
+    <title>用户列表</title>
+</head>
+<body>
+<script>
+    $(function () {
+        //初始化表格
+        loadtable();
+        //ajax加载数据
+        loaddata();
+    });
+</script>
+<div >
+
+    <div>
+        <span>状态</span>
+        <select  id="userStatus" name="status" >
+            <option  th:selected="${status==''}" value="">全部</option>
+            <option th:selected="${status=='1'}"value="1">已启用</option>
+            <option th:selected="${status=='2'}" value="2">未启用</option>
+            <option th:selected="${status=='3'}" value="3">注销</option>
+        </select>
+        <input  type="text" placeholder="帐号/手机号/姓名" name="keyword" th:value="${keyword}"  >
+        <input type="button" class="btn btn-primary" value="搜索" onclick="searchUser()"/>
+        <input th:type="button"  class="btn btn-primary" value="全部" onclick="searchAllUser()"/>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#addModal" onclick="changeModalStyle()"
+                th:text="新增" ></button>
+    </div>
+
+    <div class="table-responsive">
+        <table id="usertable"></table>
+    </div>
+
+    <div class="modal fade" id="deleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">提示</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- 模态框主体 -->
+                <div class="modal-body">
+                    <span id="deleteInfo"></span>
+                    <input type="text"  name="lgcSn" th:value="${lgcSn}" style="display:none;"/>
+                </div>
+
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deleteRole()">确定</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">新增用户</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form th:action="@{/user/saveUser}" method="post" id="add_user_form">
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+
+                        帐号：<input type="text" name="userAccount" disabled="disabled" id="aaaaa"/><br>
+                        手机号：<input type="text" name="userMobile" style="margin-top: 10px"/><br>
+                        姓名：<input type="text" name="userName" style="margin-top: 10px"/><br>
+                        所属部门：<input type="text" name="departName" style="margin-top: 10px"/><br>
+                        邮箱：<input type="text" name="userEmail" style="margin-top: 10px"/><br>
+                        <input style="display: none" type="text" name="lgcSn"></input>
+                        <label style="margin-top: 10px">状态：</label>
+                        <input type="radio" name="status" value='1' checked/><label>启用</label>
+                        <input type="radio" name="status" value="2"/><label>未启用</label>
+                    </div>
+
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" id="saveButton" onclick="addUser()">确定</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" id="editButton" style="display: none" onclick="editUser()">确定</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

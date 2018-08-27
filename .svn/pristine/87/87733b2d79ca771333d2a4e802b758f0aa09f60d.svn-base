@@ -1,0 +1,9 @@
+package com.jz.quoteoperation.common.exception;
+
+public class PermissionException extends ApplicationException {
+
+	public PermissionException(String msg, Throwable throwable) {
+		super(msg, throwable);
+	}
+
+}

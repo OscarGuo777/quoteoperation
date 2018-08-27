@@ -1,0 +1,70 @@
+package com.jz.quoteoperation.user.service.impl;
+
+import com.jz.quoteoperation.user.bo.UserDepartBO;
+import com.jz.quoteoperation.user.bo.UserInfoBO;
+import com.jz.quoteoperation.user.bo.UserInfoBO;
+import com.jz.quoteoperation.user.dao.UserInfoMapper;
+import com.jz.quoteoperation.user.po.UserInfo;
+import com.jz.quoteoperation.user.po.UserInfoExample;
+import com.jz.quoteoperation.user.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
+@Service(value = "userService")
+public class UserServiceImpl implements UserService {
+
+    @Autowired
+    private UserInfoMapper userInfoMapper;
+
+    @Override
+    public List<UserInfo> selectByExample(UserInfoExample example) {
+        return userInfoMapper.selectByExample(example);
+    }
+
+    @Override
+    public List<UserInfoBO> queryUserAuth(Integer id) {
+
+        return userInfoMapper.queryUserAuth(id);
+    }
+
+    @Override
+    public List<UserDepartBO> selectUserByKeyword(Map map) {
+        return userInfoMapper.selectUserByKeyword(map);
+    }
+
+    @Override
+    public Long saveUser(Map map) {
+        return userInfoMapper.saveUser(map);
+    }
+
+    @Override
+    public void insert(UserInfo user) {
+
+        userInfoMapper.insert(user);
+    }
+
+    @Override
+    public Long updateByPrimaryKey(UserInfo userInfo) {
+        return userInfoMapper.updateByPrimaryKey(userInfo);
+    }
+
+    @Override
+    public int deleteByExample(UserInfoExample example) {
+        return userInfoMapper.deleteByExample(example);
+    }
+
+    @Override
+    public List<UserDepartBO> queryAllUser() {
+        return userInfoMapper.queryAllUser();
+    }
+
+    @Override
+    public List<UserInfoBO> queryUserAuth(String usrAcnt) {
+        return userInfoMapper.queryUserAuthByAcnt(usrAcnt);
+    }
+
+
+}

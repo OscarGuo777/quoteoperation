@@ -1,0 +1,39 @@
+package com.jz.quoteoperation.user.service;
+
+
+
+import com.jz.quoteoperation.user.bo.UserDepartBO;
+import com.jz.quoteoperation.user.bo.UserInfoBO;
+import com.jz.quoteoperation.user.po.UserInfo;
+import com.jz.quoteoperation.user.po.UserInfoExample;
+import org.springframework.cache.annotation.Cacheable;
+
+import java.util.List;
+import java.util.Map;
+
+import static com.jz.quoteoperation.common.constant.CommonConstants.USER_CACHE;
+
+
+public interface UserService {
+    List<UserInfo> selectByExample(UserInfoExample example);
+
+    /*List<UserInfoBO> queryUserAuth(Integer id);*/
+
+    List<UserDepartBO> selectUserByKeyword(Map map);
+
+    Long saveUser(Map map);
+
+    void insert(UserInfo user);
+
+    Long updateByPrimaryKey(UserInfo userInfo);
+
+    int deleteByExample(UserInfoExample example);
+
+    List<UserDepartBO> queryAllUser();
+
+    @Cacheable(USER_CACHE)
+    List<UserInfoBO> queryUserAuth(String usrAcnt);
+
+    int insertUserAndDept(UserInfo userInfo, String departName);
+
+}

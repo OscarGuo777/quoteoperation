@@ -1,0 +1,4 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Sun Aug 12 21:03:58 CST 2018
+spring-data-redis-2.1.0.RC1.jar>spring-milestones=
+spring-data-redis-2.1.0.RC1.pom>spring-milestones=

@@ -1,0 +1,57 @@
+package com.jz.quoteoperation.common.exception;
+
+import org.slf4j.LoggerFactory;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.logging.Logger;
+
+public class DefaultExceptionResolver extends ExceptionHandlerExceptionResolver {
+
+	private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	private String errorPage = "/error";
+
+	/* (non-Javadoc)
+	 * @see org.springframework.web.servlet.HandlerExceptionResolver#resolveException(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Object, java.lang.Exception)
+	 */
+	@Override
+	public ModelAndView resolveException(HttpServletRequest request,
+			HttpServletResponse response, Object handler, Exception ex) {
+		String errorText;
+		int status;
+		if (ex instanceof BizException) {
+			errorText = ex.getMessage();
+			status = HttpServletResponse.SC_BAD_REQUEST;
+		} else if (ex instanceof PermissionException) {
+			errorText = "您没有权限进行此操作";
+			status = HttpServletResponse.SC_FORBIDDEN;
+		} else {
+			logger.error("Request URI:" + request.getRequestURI(), ex);
+			errorText = "服务器异常，请稍后再试";
+			status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+		}
+		if (isAjaxRequest(request)) {
+			return writeJsonToResponse(response, errorText, status);
+		} else {
+			return new ModelAndView(errorPage, "error", errorText);
+		}
+	}
+
+	private ModelAndView writeJsonToResponse(HttpServletResponse response, String errorMessage, Integer status) {
+		MappingJackson2JsonView view = new MappingJackson2JsonView();
+		HashMap<String, Object> model = new HashMap<String, Object>(2);
+		model.put("status", status);
+		model.put("error", errorMessage);
+		return new ModelAndView(view, model);
+	}
+
+	private boolean isAjaxRequest(HttpServletRequest request) {
+		return "XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"));
+	}
+
+}

@@ -1,0 +1,64 @@
+package com.jz.quoteoperation.dict.controller;
+
+
+import com.alibaba.fastjson.JSONArray;
+import com.jz.quoteoperation.common.service.CommonService;
+import com.jz.quoteoperation.dict.bo.DictNoDetailBO;
+import com.jz.quoteoperation.dict.bo.DictUserInfoBo;
+import com.jz.quoteoperation.dict.po.DictInfo;
+import com.jz.quoteoperation.dict.service.DictService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Controller
+@RequestMapping(value = "dict")
+public class DictController {
+
+    @Autowired
+    private DictService dictService;
+
+    @Autowired
+    private CommonService commonService;
+
+
+    @RequestMapping(value = "/toList")
+    public String toList() {
+        return "/dict/dictList";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/queryDict")
+    public String queryDict(Model model) {
+        String str = "";
+        /*List<DictInfo> dictList = dictService.selectDictAllByCode("");
+        model.addAttribute("dictList", dictList);*/
+        List<DictUserInfoBo> dictList = dictService.selectDictUserInfo();
+        List<DictNoDetailBO> dictNoDetailBOList = new ArrayList<DictNoDetailBO>();
+        for (int i = 0;i<dictList.size();i++) {
+            DictNoDetailBO dictNoDetailBO = new DictNoDetailBO();
+            dictNoDetailBO.setLgcSn(dictList.get(i).getLgcSn());
+            dictNoDetailBO.setDictCd(dictList.get(i).getDictCd());
+            dictNoDetailBO.setDictNm(dictList.get(i).getDictNm());
+            dictNoDetailBO.setStatus(dictList.get(i).getStatus());
+            dictNoDetailBO.setCrtDt(dictList.get(i).getCrtDt());
+            dictNoDetailBO.setCrtUsrId(dictList.get(i).getCrtUsrId());
+            dictNoDetailBO.setUpdDt(dictList.get(i).getUpdDt());
+            dictNoDetailBO.setUpdUsrId(dictList.get(i).getUpdUsrId());
+            dictNoDetailBO.setUsrAcnt(dictList.get(i).getUsrAcnt());
+            String detail = "";
+            for(int k = 0;k<dictList.get(i).getDictDetailList().size();k++){
+              detail +=  dictList.get(i).getDictDetailList().get(k).getDtlCd()+":"+dictList.get(i).getDictDetailList().get(k).getDtlNm()+"  ";
+            }
+            dictNoDetailBO.setDetailStr(detail);
+            dictNoDetailBOList.add(dictNoDetailBO);
+        }
+        String json = JSONArray.toJSONString(dictNoDetailBOList);
+        return  json;
+    }
+}

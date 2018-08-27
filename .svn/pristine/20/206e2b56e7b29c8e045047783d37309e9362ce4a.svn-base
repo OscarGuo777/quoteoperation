@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jz.quoteoperation.common.atchinfo.dao.AtchInfoMapper">
+  <resultMap id="BaseResultMap" type="com.jz.quoteoperation.common.atchinfo.po.AtchInfo">
+    <result column="LGC_SN" jdbcType="INTEGER" property="lgcSn" />
+    <result column="ATCH_NM" jdbcType="VARCHAR" property="atchNm" />
+    <result column="ATCH_PATH" jdbcType="VARCHAR" property="atchPath" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    LGC_SN, ATCH_NM, ATCH_PATH
+  </sql>
+  <select id="selectByExample" parameterType="com.jz.quoteoperation.common.atchinfo.po.AtchInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from qo_atch_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.jz.quoteoperation.common.atchinfo.po.AtchInfoExample">
+    delete from qo_atch_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.jz.quoteoperation.common.atchinfo.po.AtchInfo"  useGeneratedKeys="true" keyProperty="lgcSn" >
+    insert into qo_atch_info (LGC_SN, ATCH_NM, ATCH_PATH
+      )
+    values (#{lgcSn,jdbcType=INTEGER}, #{atchNm,jdbcType=VARCHAR}, #{atchPath,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.jz.quoteoperation.common.atchinfo.po.AtchInfo">
+    insert into qo_atch_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="lgcSn != null">
+        LGC_SN,
+      </if>
+      <if test="atchNm != null">
+        ATCH_NM,
+      </if>
+      <if test="atchPath != null">
+        ATCH_PATH,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="lgcSn != null">
+        #{lgcSn,jdbcType=INTEGER},
+      </if>
+      <if test="atchNm != null">
+        #{atchNm,jdbcType=VARCHAR},
+      </if>
+      <if test="atchPath != null">
+        #{atchPath,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.jz.quoteoperation.common.atchinfo.po.AtchInfoExample" resultType="java.lang.Long">
+    select count(*) from qo_atch_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update qo_atch_info
+    <set>
+      <if test="record.lgcSn != null">
+        LGC_SN = #{record.lgcSn,jdbcType=INTEGER},
+      </if>
+      <if test="record.atchNm != null">
+        ATCH_NM = #{record.atchNm,jdbcType=VARCHAR},
+      </if>
+      <if test="record.atchPath != null">
+        ATCH_PATH = #{record.atchPath,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update qo_atch_info
+    set LGC_SN = #{record.lgcSn,jdbcType=INTEGER},
+      ATCH_NM = #{record.atchNm,jdbcType=VARCHAR},
+      ATCH_PATH = #{record.atchPath,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>
+

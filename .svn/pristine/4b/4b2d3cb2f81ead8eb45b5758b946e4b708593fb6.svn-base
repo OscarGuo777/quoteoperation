@@ -1,0 +1,10 @@
+package com.jz.quoteoperation.demo.service;
+
+import com.jz.quoteoperation.demo.po.UserInfo;
+import com.jz.quoteoperation.demo.po.UserInfoExample;
+
+import java.util.List;
+
+public interface DemoService {
+    List<UserInfo> selectByExample(UserInfoExample example);
+}

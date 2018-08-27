@@ -1,0 +1,22 @@
+package com.jz.quoteoperation.dictdetail.dao;
+
+import com.jz.quoteoperation.dictdetail.po.DictDetail;
+import com.jz.quoteoperation.dictdetail.po.DictDetailExample;
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
+
+public interface DictDetailMapper {
+    long countByExample(DictDetailExample example);
+
+    int deleteByExample(DictDetailExample example);
+
+    int insert(DictDetail record);
+
+    int insertSelective(DictDetail record);
+
+    List<DictDetail> selectByExample(DictDetailExample example);
+
+    int updateByExampleSelective(@Param("record") DictDetail record, @Param("example") DictDetailExample example);
+
+    int updateByExample(@Param("record") DictDetail record, @Param("example") DictDetailExample example);
+}

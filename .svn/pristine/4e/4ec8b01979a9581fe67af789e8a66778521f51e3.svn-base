@@ -1,0 +1,140 @@
+//时间控件
+function Datetime() {
+    $('#publicinfoquery1').datetimepicker({
+        language: 'zh-CN',//显示中文
+        format: 'yyyy-mm-dd',//显示格式
+        minView: "month",//设置只显示到月份
+        initialDate: new Date(),
+        autoclose: true,//选中自动关闭
+        todayBtn: true,//显示今日按钮
+        locale: moment.locale('zh-cn')
+    });
+    $('#publicinfoquery2').datetimepicker({
+        language: 'zh-CN',//显示中文
+        format: 'yyyy-mm-dd',//显示格式
+        minView: "month",//设置只显示到月份
+        initialDate: new Date(),
+        autoclose: true,//选中自动关闭
+        todayBtn: true,//显示今日按钮
+        locale: moment.locale('zh-cn')
+    });
+    //默认获取当前日期
+    var today = new Date();
+    var nowdate = (today.getFullYear()) + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+    //对日期格式进行处理
+    var date = new Date(nowdate);
+    var mon = date.getMonth() + 1;
+    var day = date.getDate();
+    var mydate = date.getFullYear() + "-" + (mon < 10 ? "0" + mon : mon) + "-01";
+    var mydate1 = date.getFullYear() + "-" + (mon < 10 ? "0" + mon : mon) + "-" + (day < 10 ? "0" + day : day);
+    $("#publicinfoquery1").val(mydate);
+    $("#publicinfoquery2").val(mydate1);
+}
+
+//创建表格
+function loadtable() {
+    $("#publicinfotable").bootstrapTable({
+        height: 307,
+        classes: 'table table-hover',
+        // striped: true,
+        pagination: true,
+        pageNumber: 1,
+        pageSize: 5,
+        pageList: [5, 10, 20, 30],
+        fit: true,
+        // toolbar: '#toolbar',
+        // search: true,
+        // showRefresh: true,
+        sortName: "lgcSn",
+        sortOrder: "desc",
+        columns: [{
+            field: 'lgcSn',
+            title: '序号',
+            align: 'center',
+            width: '100',
+            // switchable: true
+        }, {
+            field: 'infoTpcd',
+            title: '类型',
+            align: 'center',
+            width: '100',
+            // switchable: true
+        }, {
+            field: 'crtDt',
+            title: '发布日期',
+            align: 'center',
+            width: '200',
+            formatter: function (value, row, index) {
+                var time = row.crtDt;
+                var unixTimestamp = new Date(time);
+                commonTime = unixTimestamp.toLocaleString();
+                return commonTime;
+            }
+        }, {
+            field: 'infoTitle',
+            title: '标题',
+            align: 'center',
+        }, {
+            field: 'infoCntnt',
+            title: '内容',
+            align: 'center'
+        }, {
+            field: 'operate',
+            title: '操作',
+            width: '150',
+            align: 'center',
+            formatter: function (value, row, index) {
+                // var e = '<button type="button" class="RoleOfD btn btn-default  btn-sm" style="margin-right:15px;" onclick="layer_show(\'' + "修改信息" + '\',\'' + "Update_GuideManagement.html" + '\',\'' + "" + '\',\'' + "510" + '\',\'' + row.ID + '\')">编辑</button>';
+                // var d = '<button type="button" class="RoleOfEdit btn btn-default  btn-sm"  style="margin-right:15px;" onclick="deletedata(\'' + row.ID + '\')">删除</a> ';
+                var a = '<a href="/publicinfo/toInformationlist?lgcSn=' + row.lgcSn + '&publicinfotype=' + row.infoTpcd + '">查看详细</a>'
+                return a;
+                //这里是创建一个新的列但是列里面自定义了两个按钮用作业务上的操作。
+            }
+        }],
+
+    });
+    $("#publicinfotable").bootstrapTable('hideColumn', 'infoCntnt');
+    $("#publicinfotable").bootstrapTable('hideColumn', 'infoTpcd');
+
+    $("#publicinfotable").bootstrapTable('hideLoading');
+}
+
+//加载数据
+function loaddata() {
+    var publicinfoquery1 = $("#publicinfoquery1").val();
+    var publicinfoquery2 = $("#publicinfoquery2").val();
+    var publicinfotype = $("#publicinfotype").val();
+
+    $.ajax({
+        type: "POST",
+        url: "/publicinfo/query",
+        data: {publicinfoquery1: publicinfoquery1, publicinfoquery2: publicinfoquery2, publicinfotype: publicinfotype},
+        // contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        success: function (msg) {
+            $('#publicinfotable').bootstrapTable('load', msg);
+        },
+        error: function () {
+            toastr.error("数据加载失败!");
+
+        }
+    });
+}
+
+//时间对象转换成字符串
+Date.prototype.toLocaleString = function () {
+    return this.getFullYear() + "/" + (this.getMonth() + 1) + "/" + this.getDate();
+};
+
+//点击查看表单概况信息
+function xingxi() {
+    $('#publicinfotable').on('click-row.bs.table', function (e, row, element) {
+        $("#publicinfotext").html("标题：" + row.infoTitle + "\r" + "内容:\r&nbsp;&nbsp;" + row.infoCntnt);
+
+    });
+}
+
+function toAdd(publicinfotype) {
+    window.location.href = "/publicinfo/toAdd?publicinfotype=" + publicinfotype;
+}
+

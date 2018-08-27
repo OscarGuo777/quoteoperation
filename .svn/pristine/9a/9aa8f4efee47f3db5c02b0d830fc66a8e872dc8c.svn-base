@@ -1,0 +1,37 @@
+
+//新增用户
+function addAuth(){
+    $("#addModal").modal("show");
+    $("#submitButton").click(function(){
+        $("#add_auth_form").submit();
+    })
+}
+//删除用户
+function deleteAuth(lgcSn,authNm) {
+    $("#deleteModal").modal("show");
+    $("#deleteInfo").html("你确定要删除用户"+authNm+"?");
+    $("input[name='lgcSndel']").val(lgcSn)
+    /* $("#delete_user_form").onclick(function () {
+         $("#delete_user_form").submit();
+     });*/
+    $("#deleteConfirm").click(function(){
+        $("#delete_auth_form").submit();
+    })
+}
+
+//编辑用户
+function editAuth(authNm,status,lgcSn) {
+    $("#addModal").modal("show");
+    $("input[name='authname']").val(authNm);
+    $("input[name='lgcSn']").val(lgcSn);
+    $(":radio[name='status'][value='" + status + "']").prop("checked", "checked");
+    $(".modal-title").html("编辑权限");
+
+    $("#submitButton").click(function () {
+        debugger
+        var newUrl = '/auth/editAuth';    //设置新提交地址
+        $("#add_auth_form").attr('action', newUrl);    //通过jquery为action属性赋值
+        $("#add_auth_form").submit();    //提交ID为myform的表单
+    })
+
+}

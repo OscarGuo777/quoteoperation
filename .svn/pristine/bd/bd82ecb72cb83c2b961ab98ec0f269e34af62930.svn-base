@@ -1,0 +1,55 @@
+package com.jz.quoteoperation.suggestion.controller;
+
+
+import com.jz.quoteoperation.suggestion.po.Suggestion;
+import com.jz.quoteoperation.suggestion.po.SuggestionExample;
+import com.jz.quoteoperation.suggestion.service.SuggestionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
+
+/**
+ *
+ * 　　 ┏┓   ┏┓
+ * 　　┏┛┻━━━┛┻┓
+ * 　　┃       ┃
+ * 　　┃   ━   ┃
+ * 　　┃ ┳┛ ┗┳ ┃
+ * 　　┃       ┃
+ * 　　┃   ┻   ┃
+ * 　　┃       ┃
+ * 　　┗━┓   ┏━┛
+ * 　　  ┃   ┃
+ * 　　  ┃   ┃  　　
+ * 　　  ┃   ┗━━━┓
+ * 　　  ┃       ┣┓
+ * 　　  ┃       ┏┛
+ * 　　  ┗┓┓┏━┳┓┏┛
+ * 　　   ┃┫┫ ┃┫┫
+ * 　　   ┗┻┛ ┗┻┛
+ * @author 张成
+ * @date    2018/8/14
+ */
+
+
+@Controller
+@RequestMapping(value = "/Suggestion")
+public class SuggestionController {
+
+    @Autowired
+    SuggestionService suggestionService;
+
+    @RequestMapping(value = "/tolist", produces = {"application/json;charset=UTF-8"})
+    public String toList(){
+        return "suggestionList";
+    }
+
+    @RequestMapping(value = "/Demo", produces = {"application/json;charset=UTF-8"})
+    public Object findAllUser(){
+        SuggestionExample example=new SuggestionExample();
+        List<Suggestion> list = suggestionService.selectAll(example);
+        return list;
+    }
+}

@@ -1,0 +1,82 @@
+package com.jz.quoteoperation.security.service.impl;
+
+import com.jz.quoteoperation.role.bo.RoleInfoBO;
+import com.jz.quoteoperation.security.bo.SecUserChkBO;
+import com.jz.quoteoperation.user.bo.UserInfoBO;
+import com.jz.quoteoperation.user.dao.UserInfoMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * 拉取用户信息放入安全验证缓存
+ */
+@Service(value = "userSecDetailsService")
+public class UserDetailsServiceImpl implements UserDetailsService {
+
+    @Autowired
+    private UserInfoMapper userInfoMapper;
+
+    /**
+     * 提供一种从用户名可以查到用户并返回的方法
+     * @param account 帐号
+     * @return UserDetails
+     * @throws UsernameNotFoundException
+     */
+    @Override
+    public UserDetails loadUserByUsername(String account) throws UsernameNotFoundException {
+        // 这里是数据库里的用户类
+        UserInfoBO user = createTestUser();
+
+        if (user == null) {
+            throw new UsernameNotFoundException(String.format("没有该用户 '%s'.", account));
+        } else {
+            //这里返回上面继承了 UserDetails  接口的用户类,为了简单我们写个工厂类
+            return create(user);
+        }
+    }
+
+    private SecUserChkBO create(UserInfoBO user) {
+        List<String> list = user.getRole_list().stream().map(RoleInfoBO::getRoleNm).collect(Collectors.toList());
+        List<GrantedAuthority> list2 = mapToGrantedAuthorities(list);
+        SecUserChkBO sbo = new SecUserChkBO(user.getLgcSn()+"",user.getUsrAcnt()+"",user.getUsrPwd(),list2);
+        sbo.setRole_list(user.getRole_list());
+        return sbo;
+    }
+
+    //将与用户类一对多的角色类的名称集合转换为 GrantedAuthority 集合
+    private List<GrantedAuthority> mapToGrantedAuthorities(List<String> authorities) {
+        return authorities.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+    }
+
+    private UserInfoBO createTestUser(){
+        UserInfoBO bo = new UserInfoBO();
+        bo.setLgcSn(1);
+        bo.setOpenId("dsofjwofjosdifjoa");
+        bo.setStatus("1");
+        bo.setUsrAcnt(123);
+        bo.setUsrMobi("18888888777");
+        bo.setUsrNm("test");
+        BCryptPasswordEncoder encode = new BCryptPasswordEncoder();
+        String hashPass = encode.encode("888888");
+        bo.setUsrPwd(hashPass);
+        RoleInfoBO rbo = new RoleInfoBO();
+        rbo.setRoleNm("ROLE_ADMIN");
+        rbo.setStatus("1");
+        List<RoleInfoBO> list = new ArrayList<RoleInfoBO>();
+        list.add(rbo);
+        bo.setRole_list(list);
+        return bo;
+    }
+}

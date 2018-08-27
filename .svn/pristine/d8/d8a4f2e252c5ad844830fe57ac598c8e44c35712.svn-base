@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jz.quoteoperation.publicinfo.dao.PublicInfoMapper">
+  <resultMap id="BaseResultMap" type="com.jz.quoteoperation.publicinfo.po.PublicInfo">
+    <result column="LGC_SN" jdbcType="INTEGER" property="lgcSn" />
+    <result column="CRT_DT" jdbcType="DATE" property="crtDt" />
+    <result column="CRT_USR_ID" jdbcType="INTEGER" property="crtUsrId" />
+    <result column="INFO_TPCD" jdbcType="CHAR" property="infoTpcd" />
+    <result column="INFO_TITLE" jdbcType="VARCHAR" property="infoTitle" />
+    <result column="INFO_CNTNT" jdbcType="VARCHAR" property="infoCntnt" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    LGC_SN, CRT_DT, CRT_USR_ID, INFO_TPCD, INFO_TITLE, INFO_CNTNT
+  </sql>
+  <select id="selectByExample" parameterType="com.jz.quoteoperation.publicinfo.po.PublicInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from qo_public_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.jz.quoteoperation.publicinfo.po.PublicInfoExample">
+    delete from qo_public_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.jz.quoteoperation.publicinfo.po.PublicInfo">
+    insert into qo_public_info (LGC_SN, CRT_DT, CRT_USR_ID, 
+      INFO_TPCD, INFO_TITLE, INFO_CNTNT
+      )
+    values (#{lgcSn,jdbcType=INTEGER}, #{crtDt,jdbcType=DATE}, #{crtUsrId,jdbcType=INTEGER}, 
+      #{infoTpcd,jdbcType=CHAR}, #{infoTitle,jdbcType=VARCHAR}, #{infoCntnt,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.jz.quoteoperation.publicinfo.po.PublicInfo">
+    insert into qo_public_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="lgcSn != null">
+        LGC_SN,
+      </if>
+      <if test="crtDt != null">
+        CRT_DT,
+      </if>
+      <if test="crtUsrId != null">
+        CRT_USR_ID,
+      </if>
+      <if test="infoTpcd != null">
+        INFO_TPCD,
+      </if>
+      <if test="infoTitle != null">
+        INFO_TITLE,
+      </if>
+      <if test="infoCntnt != null">
+        INFO_CNTNT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="lgcSn != null">
+        #{lgcSn,jdbcType=INTEGER},
+      </if>
+      <if test="crtDt != null">
+        #{crtDt,jdbcType=DATE},
+      </if>
+      <if test="crtUsrId != null">
+        #{crtUsrId,jdbcType=INTEGER},
+      </if>
+      <if test="infoTpcd != null">
+        #{infoTpcd,jdbcType=CHAR},
+      </if>
+      <if test="infoTitle != null">
+        #{infoTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="infoCntnt != null">
+        #{infoCntnt,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.jz.quoteoperation.publicinfo.po.PublicInfoExample" resultType="java.lang.Long">
+    select count(*) from qo_public_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update qo_public_info
+    <set>
+      <if test="record.lgcSn != null">
+        LGC_SN = #{record.lgcSn,jdbcType=INTEGER},
+      </if>
+      <if test="record.crtDt != null">
+        CRT_DT = #{record.crtDt,jdbcType=DATE},
+      </if>
+      <if test="record.crtUsrId != null">
+        CRT_USR_ID = #{record.crtUsrId,jdbcType=INTEGER},
+      </if>
+      <if test="record.infoTpcd != null">
+        INFO_TPCD = #{record.infoTpcd,jdbcType=CHAR},
+      </if>
+      <if test="record.infoTitle != null">
+        INFO_TITLE = #{record.infoTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="record.infoCntnt != null">
+        INFO_CNTNT = #{record.infoCntnt,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update qo_public_info
+    set LGC_SN = #{record.lgcSn,jdbcType=INTEGER},
+      CRT_DT = #{record.crtDt,jdbcType=DATE},
+      CRT_USR_ID = #{record.crtUsrId,jdbcType=INTEGER},
+      INFO_TPCD = #{record.infoTpcd,jdbcType=CHAR},
+      INFO_TITLE = #{record.infoTitle,jdbcType=VARCHAR},
+      INFO_CNTNT = #{record.infoCntnt,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

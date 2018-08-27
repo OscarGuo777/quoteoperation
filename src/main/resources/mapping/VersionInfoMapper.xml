@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jz.quoteoperation.version.dao.VersionInfoMapper">
+  <resultMap id="BaseResultMap" type="com.jz.quoteoperation.version.po.VersionInfo">
+    <result column="LGC_SN" jdbcType="INTEGER" property="lgcSn" />
+    <result column="VRSN_SN" jdbcType="VARCHAR" property="vrsnSn" />
+    <result column="VRSN_DESC" jdbcType="VARCHAR" property="vrsnDesc" />
+    <result column="PUB_USR_ID" jdbcType="VARCHAR" property="pubUsrId" />
+    <result column="UPLD_LNK" jdbcType="VARCHAR" property="upldLnk" />
+    <result column="UPLD_PWD" jdbcType="VARCHAR" property="upldPwd" />
+    <result column="CRT_DT" jdbcType="DATE" property="crtDt" />
+    <result column="CRT_USR_ID" jdbcType="VARCHAR" property="crtUsrId" />
+    <result column="UPD_DT" jdbcType="DATE" property="updDt" />
+    <result column="UPD_USR_ID" jdbcType="VARCHAR" property="updUsrId" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    LGC_SN, VRSN_SN, VRSN_DESC, PUB_USR_ID, UPLD_LNK, UPLD_PWD, CRT_DT, CRT_USR_ID, UPD_DT, 
+    UPD_USR_ID
+  </sql>
+  <select id="selectByExample" parameterType="com.jz.quoteoperation.version.po.VersionInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from qo_version_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.jz.quoteoperation.version.po.VersionInfoExample">
+    delete from qo_version_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.jz.quoteoperation.version.po.VersionInfo">
+    insert into qo_version_info ( VRSN_SN, VRSN_DESC,
+       UPLD_LNK, UPLD_PWD,
+      CRT_DT, CRT_USR_ID, STATUS
+      )
+    values (#{vrsnSn,jdbcType=VARCHAR}, #{vrsnDesc,jdbcType=VARCHAR},
+      #{upldLnk,jdbcType=VARCHAR}, #{upldPwd,jdbcType=VARCHAR},
+      #{crtDt,jdbcType=DATE}, #{crtUsrId,jdbcType=VARCHAR},'2'
+      )
+  </insert>
+  <update id="update" parameterType="com.jz.quoteoperation.version.po.VersionInfo">
+      update qo_version_info
+      set
+      VRSN_SN = #{vrsnSn,jdbcType=VARCHAR},
+      VRSN_DESC = #{vrsnDesc,jdbcType=VARCHAR},
+      UPLD_LNK = #{upldLnk,jdbcType=VARCHAR},
+      UPLD_PWD = #{upldPwd,jdbcType=VARCHAR},
+      UPD_DT = #{updDt,jdbcType=VARCHAR},
+      UPD_USR_ID = #{updUsrId,jdbcType=VARCHAR}
+      WHERE  LGC_SN = #{lgcSn,jdbcType=INTEGER}
+  </update>
+
+
+
+  <select id="selectVersionInfoList" parameterType="map"  resultMap="BaseResultMap">
+     select  LGC_SN,VRSN_SN,VRSN_DESC,STATUS,CRT_DT,UPLD_LNK,UPLD_PWD from qo_version_info where 1=1
+    <if test="vrsnSn != null">
+      and VRSN_SN like CONCAT('%',TRIM(#{vrsnSn:VARCHAR}),'%')
+    </if>
+    order by CRT_DT desc
+  </select>
+
+
+
+  <update id="updatestatus" parameterType="map">
+      update qo_version_info
+      set status=#{status,jdbcType=VARCHAR}
+      WHERE  LGC_SN = #{lgcsn,jdbcType=INTEGER}
+  </update>
+
+  <update id="wqyversion" parameterType="map">
+      update qo_version_info
+      set status='2'
+      WHERE  status = '1'
+  </update>
+
+  <delete id="delete" parameterType="map">
+       delete  from  qo_version_info where LGC_SN = #{lgcsn,jdbcType=INTEGER}
+  </delete>
+
+  <select id="selecVersionInfo" parameterType="map"  resultMap="BaseResultMap">
+     select LGC_SN,VRSN_SN, VRSN_DESC,
+      UPLD_LNK, UPLD_PWD
+       from qo_version_info where LGC_SN = #{lgcSn,jdbcType=INTEGER}
+  </select>
+
+
+
+
+  <insert id="insertSelective" parameterType="com.jz.quoteoperation.version.po.VersionInfo">
+    insert into qo_version_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="lgcSn != null">
+        LGC_SN,
+      </if>
+      <if test="vrsnSn != null">
+        VRSN_SN,
+      </if>
+      <if test="vrsnDesc != null">
+        VRSN_DESC,
+      </if>
+      <if test="pubUsrId != null">
+        PUB_USR_ID,
+      </if>
+      <if test="upldLnk != null">
+        UPLD_LNK,
+      </if>
+      <if test="upldPwd != null">
+        UPLD_PWD,
+      </if>
+      <if test="crtDt != null">
+        CRT_DT,
+      </if>
+      <if test="crtUsrId != null">
+        CRT_USR_ID,
+      </if>
+      <if test="updDt != null">
+        UPD_DT,
+      </if>
+      <if test="updUsrId != null">
+        UPD_USR_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="lgcSn != null">
+        #{lgcSn,jdbcType=INTEGER},
+      </if>
+      <if test="vrsnSn != null">
+        #{vrsnSn,jdbcType=VARCHAR},
+      </if>
+      <if test="vrsnDesc != null">
+        #{vrsnDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="pubUsrId != null">
+        #{pubUsrId,jdbcType=INTEGER},
+      </if>
+      <if test="upldLnk != null">
+        #{upldLnk,jdbcType=VARCHAR},
+      </if>
+      <if test="upldPwd != null">
+        #{upldPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="crtDt != null">
+        #{crtDt,jdbcType=DATE},
+      </if>
+      <if test="crtUsrId != null">
+        #{crtUsrId,jdbcType=INTEGER},
+      </if>
+      <if test="updDt != null">
+        #{updDt,jdbcType=DATE},
+      </if>
+      <if test="updUsrId != null">
+        #{updUsrId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.jz.quoteoperation.version.po.VersionInfoExample" resultType="java.lang.Long">
+    select count(*) from qo_version_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update qo_version_info
+    <set>
+      <if test="record.lgcSn != null">
+        LGC_SN = #{record.lgcSn,jdbcType=INTEGER},
+      </if>
+      <if test="record.vrsnSn != null">
+        VRSN_SN = #{record.vrsnSn,jdbcType=VARCHAR},
+      </if>
+      <if test="record.vrsnDesc != null">
+        VRSN_DESC = #{record.vrsnDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pubUsrId != null">
+        PUB_USR_ID = #{record.pubUsrId,jdbcType=INTEGER},
+      </if>
+      <if test="record.upldLnk != null">
+        UPLD_LNK = #{record.upldLnk,jdbcType=VARCHAR},
+      </if>
+      <if test="record.upldPwd != null">
+        UPLD_PWD = #{record.upldPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.crtDt != null">
+        CRT_DT = #{record.crtDt,jdbcType=DATE},
+      </if>
+      <if test="record.crtUsrId != null">
+        CRT_USR_ID = #{record.crtUsrId,jdbcType=INTEGER},
+      </if>
+      <if test="record.updDt != null">
+        UPD_DT = #{record.updDt,jdbcType=DATE},
+      </if>
+      <if test="record.updUsrId != null">
+        UPD_USR_ID = #{record.updUsrId,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update qo_version_info
+    set LGC_SN = #{record.lgcSn,jdbcType=INTEGER},
+      VRSN_SN = #{record.vrsnSn,jdbcType=VARCHAR},
+      VRSN_DESC = #{record.vrsnDesc,jdbcType=VARCHAR},
+      PUB_USR_ID = #{record.pubUsrId,jdbcType=INTEGER},
+      UPLD_LNK = #{record.upldLnk,jdbcType=VARCHAR},
+      UPLD_PWD = #{record.upldPwd,jdbcType=VARCHAR},
+      CRT_DT = #{record.crtDt,jdbcType=DATE},
+      CRT_USR_ID = #{record.crtUsrId,jdbcType=INTEGER},
+      UPD_DT = #{record.updDt,jdbcType=DATE},
+      UPD_USR_ID = #{record.updUsrId,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

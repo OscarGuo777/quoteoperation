@@ -1,0 +1,49 @@
+package com.jz.quoteoperation.common.service.impl;
+
+import com.jz.quoteoperation.common.service.CommonService;
+import com.jz.quoteoperation.common.util.JedisClientUtil;
+import com.jz.quoteoperation.dict.bo.KVMap;
+import com.jz.quoteoperation.dict.po.DictDetail;
+import com.jz.quoteoperation.dict.po.DictInfo;
+import com.jz.quoteoperation.dict.service.DictService;
+import com.jz.quoteoperation.user.bo.UserInfoBO;
+import com.jz.quoteoperation.user.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+import java.util.ArrayList;
+import java.util.List;
+
+@Service(value = "commonService")
+public class CommonServiceImpl implements CommonService {
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private DictService dictService;
+    @Autowired
+    private UserService userService;
+
+    @Override
+    public UserInfoBO getCurrentUser() {
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal();
+        UserInfoBO user = userService.queryUserAuth(userDetails.getUsername()).get(0);
+        return user;
+    }
+
+    @Override
+    public List<KVMap> getDictMapList(String dictCode) {
+        List<DictInfo> list = dictService.selectDictAllByCode(dictCode);
+        List<KVMap> mapList = new ArrayList<KVMap>();
+        for(DictInfo dict : list){
+            List<DictDetail> tmpMapList = dict.getDictDetailList();
+            for(DictDetail dtl : tmpMapList){
+                KVMap map = new KVMap(dtl.getDtlCd(),dtl.getDtlNm());
+                mapList.add(map);
+            }
+        }
+        return mapList;
+    }
+}

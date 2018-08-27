@@ -1,0 +1,9 @@
+package com.jz.quoteoperation.common.dictcom.service;
+
+import com.jz.quoteoperation.dict.bo.KVMap;
+
+import java.util.List;
+
+public interface DictCommonService {
+    public List<KVMap> getDictMapList(String dictCode);
+}

@@ -1,0 +1,73 @@
+
+    function login() {
+        debugger
+        var userName = $("input[name='username']").val();
+        var password = $("input[name='password']").val();
+        $.ajax({
+            type: "POST",
+            url: "/user/queryUser",
+            data: {userName: userName, password: password},
+            dataType:"json",
+            success: function (data) {
+                debugger
+               if(data.status==200){
+                    alert("success");
+               }else{
+                   $("#errorMsg").css("display","block").html(data.errorMsg)
+               }
+            }
+        });
+    };
+
+$(function () {
+    $('#user_form').validate({
+
+        // 验证规则
+        rules:{
+            username:{ //form表单中input[name='account']元素的验证规则
+                required: true,                  //必须字段，不能为空
+                rangelength: [2, 20],
+            },
+            password:{
+                required: true,
+                rangelength: [6, 30],
+            },
+
+
+
+        },
+
+        // 提示消息
+        messages:{
+            username:{
+                required: '账号不能为空',
+                rangelength: '用户名必须在{0}-{1}个字之间',
+            },
+            password:{
+                required: '密码不能为空',
+                rangelength: '密码名必须在{0}-{1}个位之间',
+            },
+
+        },
+
+        // 错误标签元素
+        errorElement: 'span',
+
+       /* // 错误提示位置
+        errorPlacement: function (error, element) { // error是错误信息的提示元素，element是当前input域
+            debugger
+            error.appendTo(element.parent()); //追加提示元素，去掉之前的成功元素
+        },*/
+
+
+    });
+
+
+
+})
+
+
+
+
+
+

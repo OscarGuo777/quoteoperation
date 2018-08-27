@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <script type="text/javascript"
+            th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/popper.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap-table.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap-table-zh-CN.js}"></script>
+    <script type="text/javascript" th:src="@{/js/moment-with-locales.js}"></script>
+    <script type="text/javascript" th:src="@{/js/auth/auth.js}"></script>
+    <link type="text/css"  th:href="@{/css/bootstrap.min.css}"
+          rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <title>用户列表</title>
+</head>
+<body>
+<div class="container">
+    <div style="margin: 50px 0px">
+        <input type="button" class="btn btn-primary" value="新增" onclick="addAuth()" />
+    </div>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>权限名称</th>
+            <th>状态</th>
+            <th>创建时间</th>
+            <th>创建人</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody th:each="auth:${authList} ">
+        <td th:text="${auth.authNm}"></td>
+        <td th:text="${auth.status}"></td>
+        <td th:text="${auth.crtDt}"></td>
+        <td th:text="${auth.crtUsrId}"></td>
+        <td>
+            <a  href="javascript:void(0);" th:onclick="'javascript:editAuth(\''+${auth.authNm}+'\',\''+${auth.status}+'\',\''+${auth.lgcSn}+'\');'" >编辑</a>
+            <a  href="javascript:void(0);" th:onclick="'javascript:deleteAuth(\''+${auth.lgcSn}+'\',\''+${auth.authNm}+'\');'" >删除</a>
+        </td>
+        </tbody>
+    </table>
+
+    <div class="modal fade" id="deleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">提示</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form th:action="@{/auth/deleteAuth}" method="post" id="delete_auth_form">
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+
+                        <span id="deleteInfo"></span>
+                        <input type="text"  name="lgcSndel" th:value="${lgcSn}" style="display:none;"/>
+                    </div>
+
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" data-dismiss="modal" id="deleteConfirm">确定</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">新增权限</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form th:action="@{/auth/saveAuth}" method="post" id="add_auth_form">
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+
+                        权限名称：<input type="text" name="authname" /><br>
+                        <input style="display: none" type="text" name="lgcSn"></input>
+                        <label>状态：</label>
+                        <input type="radio" name="status" value='1' checked/><label>启用</label>
+                        <input type="radio" name="status" value="2"/><label>未启用</label>
+                    </div>
+
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" data-dismiss="modal" id="submitButton">确定</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

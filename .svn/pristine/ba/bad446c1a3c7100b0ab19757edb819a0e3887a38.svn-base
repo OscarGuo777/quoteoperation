@@ -1,0 +1,32 @@
+package com.jz.quoteoperation.common.dictcom.service.impl;
+
+import com.jz.quoteoperation.common.dictcom.service.DictCommonService;
+import com.jz.quoteoperation.dict.bo.KVMap;
+import com.jz.quoteoperation.dict.po.DictDetail;
+import com.jz.quoteoperation.dict.po.DictInfo;
+import com.jz.quoteoperation.dict.service.DictService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service(value = "dictCommon")
+public class DictCommonServiceImpl implements DictCommonService {
+    @Autowired
+    private DictService dictService;
+
+    @Override
+    public List<KVMap> getDictMapList(String dictCode) {
+        List<DictInfo> list = dictService.selectDictAllByCode(dictCode);
+        List<KVMap> mapList = new ArrayList<KVMap>();
+        for(DictInfo dict : list){
+            List<DictDetail> tmpMapList = dict.getDictDetailList();
+            for(DictDetail dtl : tmpMapList){
+                KVMap map = new KVMap(dtl.getDtlCd(),dtl.getDtlNm());
+                mapList.add(map);
+            }
+        }
+        return mapList;
+    }
+}

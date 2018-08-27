@@ -1,0 +1,109 @@
+package com.jz.quoteoperation.user.service.impl;
+
+import com.jz.quoteoperation.common.service.CommonService;
+import com.jz.quoteoperation.common.util.StringUtil;
+import com.jz.quoteoperation.dept.po.DeptInfo;
+import com.jz.quoteoperation.dept.service.DeptService;
+import com.jz.quoteoperation.user.bo.UserDepartBO;
+import com.jz.quoteoperation.user.bo.UserInfoBO;
+import com.jz.quoteoperation.user.bo.UserInfoBO;
+import com.jz.quoteoperation.user.dao.UserInfoMapper;
+import com.jz.quoteoperation.user.po.UserInfo;
+import com.jz.quoteoperation.user.po.UserInfoExample;
+import com.jz.quoteoperation.user.service.UserService;
+import com.jz.quoteoperation.userdept.po.UserDept;
+import com.jz.quoteoperation.userdept.service.UserDeptService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+@Service(value = "userService")
+public class UserServiceImpl implements UserService {
+
+    @Autowired
+    private UserInfoMapper userInfoMapper;
+
+    @Autowired
+    private CommonService commonService;
+
+    @Autowired
+    private DeptService deptService;
+
+    @Autowired
+    private UserDeptService userDeptService;
+
+    @Override
+    public List<UserInfo> selectByExample(UserInfoExample example) {
+        return userInfoMapper.selectByExample(example);
+    }
+
+   /* @Override
+    public List<UserInfoBO> queryUserAuth(Integer id) {
+
+        return userInfoMapper.queryUserAuth(id);
+    }*/
+
+    @Override
+    public List<UserDepartBO> selectUserByKeyword(Map map) {
+        return userInfoMapper.selectUserByKeyword(map);
+    }
+
+    @Override
+    public Long saveUser(Map map) {
+        return userInfoMapper.saveUser(map);
+    }
+
+    @Override
+    public void insert(UserInfo user) {
+
+        userInfoMapper.insert(user);
+    }
+
+    @Override
+    public Long updateByPrimaryKey(UserInfo userInfo) {
+        return userInfoMapper.updateByPrimaryKey(userInfo);
+    }
+
+    @Override
+    public int deleteByExample(UserInfoExample example) {
+        return userInfoMapper.deleteByExample(example);
+    }
+
+    @Override
+    public List<UserDepartBO> queryAllUser() {
+        return userInfoMapper.queryAllUser();
+    }
+
+    @Override
+    public List<UserInfoBO> queryUserAuth(String usrAcnt) {
+        return userInfoMapper.queryUserAuthByAcnt(usrAcnt);
+    }
+
+    @Override
+    public int insertUserAndDept(UserInfo userInfo, String departName) {
+            int insert = 1;
+            userInfo.setUsrPwd(StringUtil.encodePassword("888888"));
+            userInfo.setCrtDt(new Date());
+            UserInfoBO currentUser = commonService.getCurrentUser();
+            userInfo.setCrtUsrId(currentUser.getLgcSn());
+            this.insert(userInfo);
+            Integer usrSN = userInfo.getLgcSn();
+
+            DeptInfo dept = new DeptInfo();
+            dept.setDeptNm(departName);
+            dept.setCrtDt(new Date());
+            deptService.insert(dept);
+            Integer deptSN = dept.getLgcSn();
+
+            UserDept userDept = new UserDept();
+            userDept.setUsrSn(usrSN);
+            userDept.setDeptSn(deptSN);
+            userDeptService.insert(userDept);
+            return insert;
+    }
+
+
+}

@@ -1,0 +1,84 @@
+package com.jz.quoteoperation.auth.controller;
+
+import com.jz.quoteoperation.auth.po.AuthInfo;
+import com.jz.quoteoperation.auth.po.AuthInfoExample;
+import com.jz.quoteoperation.auth.service.AuthService;
+import com.jz.quoteoperation.user.po.UserInfo;
+import com.jz.quoteoperation.user.po.UserInfoExample;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.Date;
+import java.util.List;
+
+@Controller
+@RequestMapping(value = "/auth")
+public class AuthController {
+
+    @Autowired
+    private AuthService authService;
+
+    /**
+     * 查询所有权限
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/queryAuth",method = RequestMethod.GET)
+    public String queryAuth(Model model) {
+        AuthInfoExample example = new AuthInfoExample();
+        List<AuthInfo> authList = authService.selectByExample(example);
+        model.addAttribute("authList", authList);
+        return "/auth/authList.html";
+    }
+
+    /**
+     * 保存权限
+     */
+    @RequestMapping(value = "/saveAuth", method = RequestMethod.POST)
+    public String saveUser(String authname,String status) {
+        AuthInfo auth = new AuthInfo();
+
+        auth.setAuthNm(authname);
+        auth.setStatus(status);
+        auth.setCrtDt(new Date());
+        authService.insert(auth);
+       return "redirect:/auth/queryAuth";
+    }
+
+    /**
+     * 编辑权限
+     * @param authname
+     * @param status
+     * @param lgcSn
+     * @param model
+     * @return
+     */
+
+    @RequestMapping(value = "/editAuth",method = RequestMethod.POST)
+    public String editUser(String authname,String status,Integer lgcSn,Model model){
+        AuthInfo authInfo = new AuthInfo();
+        authInfo.setAuthNm(authname);
+        authInfo.setStatus(status);
+        authInfo.setLgcSn(lgcSn);
+        authService.updateByPrimaryKey(authInfo);
+        /*UserInfo userInfo = userInfos.get(0);
+        model.addAttribute("userInfo", userInfo);*/
+        return "redirect:/auth/queryAuth";
+    }
+
+    /**
+     * 删除用户
+     */
+
+    @RequestMapping(value = "/deleteAuth",method = RequestMethod.POST)
+    public String deleteUser(Integer lgcSndel,Model model){
+        AuthInfoExample example = new AuthInfoExample();
+        example.or().andLgcSnEqualTo(lgcSndel);
+        authService.deleteByExample(example);
+        return "redirect:/auth/queryAuth";
+    }
+}

@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="applicable-device" content="pc,mobile">
+    <meta name="renderer" content="webkit">
+    <meta name="theme-color" content="#28a745">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>用户分组关联</title>
+    <script type="text/javascript" src="../../static/js/jquery-3.3.1.min.js" th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script type="text/javascript" src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" src="../../static/js/bootstrapValidator.js" th:src="@{/js/bootstrapValidator.js}"></script>
+    <script type="text/javascript" src="../../static/js/jquery.validate.js" th:src="@{/js/jquery.validate.js}"></script>
+    <link type="text/css" href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+    <script type="text/javascript">
+        $(function(){
+            isorcheckall();
+            function initTableCheckbox() {
+                var $thr = $('table thead tr');
+               // var $checkAllTh = $('<th><input type="checkbox" id="checkAll" name="checkAll" /></th>');
+                /*将全选/反选复选框添加到表头最前，即增加一列*/
+              //  $thr.prepend($checkAllTh);
+                /*“全选/反选”复选框*/
+                var $checkAll = $thr.find('input');
+                $checkAll.click(function(event){
+                    /*将所有行的选中状态设成全选框的选中状态*/
+                    $tbr.find('input').prop('checked',$(this).prop('checked'));
+                    /*并调整所有选中行的CSS样式*/
+                    if ($(this).prop('checked')) {
+                        $tbr.find('input').parent().parent().addClass('warning');
+                    } else{
+                        $tbr.find('input').parent().parent().removeClass('warning');
+                    }
+                    /*阻止向上冒泡，以防再次触发点击操作*/
+                    event.stopPropagation();
+                });
+                /*点击全选框所在单元格时也触发全选框的点击操作*/
+                var $checkAllTh = $thr.find("th").eq(0);
+                $checkAllTh.click(function(){
+                    $(this).find('input').click();
+                });
+                var $tbr = $('table tbody tr');
+              //  var $checkItemTd = $('<td><input type="checkbox" name="selectgroupid" /></td>');
+                /*每一行都在最前面插入一个选中复选框的单元格*/
+             //   $tbr.prepend($checkItemTd);
+                /*点击每一行的选中复选框时*/
+                $tbr.find('input').click(function(event){
+
+                    /*调整选中行的CSS样式*/
+                    $(this).parent().parent().toggleClass('warning');
+                    /*如果已经被选中行的行数等于表格的数据行数，将全选框设为选中状态，否则设为未选中状态*/
+                    $checkAll.prop('checked',$tbr.find('input:checked').length == $tbr.length ? true : false);
+                    /*阻止向上冒泡，以防再次触发点击操作*/
+                    event.stopPropagation();
+                });
+                /*点击每一行时也触发该行的选中操作*/
+                $tbr.click(function(){
+                    $(this).find('input').click();
+                });
+            }
+            initTableCheckbox();
+        });
+
+
+        function  clickgroup(obj) {
+
+                $("#groupid").val(obj);
+                $("#form").submit();
+            }
+
+        function  isorcheckall(){
+            var $thr = $('table thead tr');
+            var $checkAll = $thr.find('input');
+            var $checkAllTh = $thr.find("th").eq(0);
+            var $tbr = $('table tbody tr');
+            $checkAll.prop('checked',$tbr.find('input:checked').length == $tbr.length ? true : false);
+        }
+
+
+    </script>
+</head>
+
+
+<body>
+
+<div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <ul th:each="m,stat:${list}">
+                    <li th:if="${m.lgcSn}==${groupid}"  ><a href="#" th:onclick="'javascript:clickgroup('+${m.lgcSn}+')'" th:text="${m.groupname}" style="background-color: #005cbf"></a></li>
+                    <li th:unless="${m.lgcSn}==${groupid}" ><a href="#" th:onclick="'javascript:clickgroup('+${m.lgcSn}+')'" th:text="${m.groupname}" ></a></li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <form class="form-inline" th:action="@{/wechatGroupController/selectuser}"  method="post" id="form" >
+                    <input type="hidden" name="groupid" id="groupid" th:value="${groupid}">
+                </form>
+                <form id="form2"  class="form-inline" th:action="@{/wechatGroupController/saveusergroup}"  method="post">
+                    <input type="hidden" name="form2groupid" id="form2groupid" th:value="${groupid}">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" id="checkAll" name="checkAll" /></th>
+                            <th>序号</th>
+                            <th>用户账号</th>
+                            <th>用户名字</th>
+                            <th>Open_id</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="m,stat:${userlist}" th:style="'background-color:'+@{${stat.odd}?'#F2F2F2'}">
+                            <td  th:if="${m.group_id}==${groupid}"><input  checked type="checkbox"  name="selectuseracnt" th:value="${m.usr_acnt}+','+${m.open_id}"></td>
+                            <td  th:unless="${m.group_id}==${groupid}"><input   type="checkbox"  name="selectuseracnt" th:value="${m.usr_acnt}+','+${m.open_id}"></td>
+                            <td th:text="${stat.count}"></td>
+                            <td th:text="${m.usr_acnt}"></td>
+                            <td th:text=" ${m.usr_nm}"></td>
+                            <td th:text=" ${m.open_id}"></td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                    <input type="submit" class="btn btn-primary" value="保存">
+                </form>
+
+            </div>
+        </div>
+</div>
+</body>
+</html>

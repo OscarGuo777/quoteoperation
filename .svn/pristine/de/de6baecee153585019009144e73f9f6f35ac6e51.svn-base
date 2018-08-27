@@ -1,0 +1,4 @@
+package com.jz.quoteoperation.dict.controller;
+
+public class DictController {
+}

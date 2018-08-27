@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<!-- 　　 ┏┓   ┏┓-->
+<!-- 　　┏┛┻━━━┛┻┓-->
+<!-- 　　┃       ┃-->
+<!-- 　　┃   ━   ┃-->
+<!-- 　　┃ ┳┛ ┗┳ ┃-->
+<!-- 　　┃       ┃-->
+<!-- 　　┃   ┻   ┃-->
+<!-- 　　┃       ┃-->
+<!-- 　　┗━┓   ┏━┛-->
+<!-- 　　  ┃   ┃-->
+<!-- 　　  ┃   ┃  　　-->
+<!-- 　　  ┃   ┗━━━┓-->
+<!-- 　　  ┃       ┣┓-->
+<!-- 　　  ┃       ┏┛-->
+<!-- 　　  ┗┓┓┏━┳┓┏┛-->
+<!-- 　　   ┃┫┫ ┃┫┫-->
+<!-- 　　   ┗┻┛ ┗┻┛-->
+<!-- @author 张成-->
+<!-- @date    2018/8/17-->
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script type="text/javascript" src="../../static/js/jquery-3.3.1.min.js"
+            th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script type="text/javascript" src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    <link type="text/css" href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"
+          rel="stylesheet"/>
+    <!--toastr弹窗工具-->
+    <script type="text/javascript" src="../../static/js/toastr.js" th:src="@{/js/toastr.js}"></script>
+    <link type="text/css" href="../../static/css/toastr.css" th:href="@{/css/toastr.css}"
+          rel="stylesheet"/>
+
+    <title th:text="${title}"></title>
+
+</head>
+<script type="text/javascript">
+
+    function upfile() {
+        var formData = new FormData($("#uploadForm")[0]);
+        $.ajax({
+            url: "/file/upload",
+            data: formData,
+            type: "Post",
+            dataType: "json",
+            cache: false,//上传文件无需缓存
+            processData: false,//用于对data参数进行序列化处理 这里必须false
+            contentType: false, //必须
+            success: function (result) {
+                $("#atchInfos").val(JSON.stringify(result));
+                toastr.success("上传成功!");
+            },
+            error: function () {
+                toastr.error("上传失败!");
+            }
+        })
+    }
+
+    function adddata() {
+        var atchInfos = $("#atchInfos").val();
+        var infotitle = $("#infotitle").val();
+        var inforCntnt = $("#inforCntnt").val();
+        var publicinfotype = $("#publicinfotype").val();
+        var username = $("#username").val();
+        var authorities = $("#authorities").val();
+        $.ajax({
+            url: "/publicinfo/addData",
+            data: {infotitle: infotitle, inforCntnt: inforCntnt,
+                atchInfos: atchInfos, publicinfotype: publicinfotype,
+                username:username,authorities:authorities
+            },
+            type: "post",
+            dataType: "text",
+            success: function (result) {
+                if (JSON.parse(result).state == "true") {
+                    toastr.success("保存成功!");
+                    window.location.href = "/publicinfo/tolist?publicinfotype=" + publicinfotype;
+                } else {
+                    toastr.error("保存失败!");
+                }
+            },
+        })
+    }
+
+    function uploadImg() {
+        var _name, _fileName, personsFile;
+        personsFile = document.getElementById("personsFile");
+        _name = personsFile.value;
+        _fileName = _name.substring(_name.lastIndexOf(".") + 1).toLowerCase();
+        if (_fileName !== "png" && _fileName !== "jpg") {
+            alert("上传图片格式不正确，请重新上传");
+        }
+    }
+
+    function toList(publicinfotype) {
+        window.location.href = "/publicinfo/tolist?publicinfotype=" + publicinfotype;
+    }
+</script>
+<body>
+<div style="width: 90%;margin-left: 5%;">
+    <input type="text" style="display:none;" id="username" sec:authentication="principal.username"></input>
+    <input type="text" style="display:none;" id="authorities" sec:authentication="principal.authorities"></input>
+    <h2 th:text="${title}"></h2>
+    <div style="margin-top: 5%;">
+        <span>标题 : </span>
+        <input id="infotitle" name="infotitle" style="width: 80%;margin-left: 2%;"></input>
+    </div>
+    <div style="margin-top: 5%;">
+        <input th:value="${publicinfotype}" id="publicinfotype" type="text" style="display: none;">
+        <p>内容 : </p>
+        <textarea id="inforCntnt" name="inforCntnt" style="width: 80%;margin-left: 5%;height: 150px;"></textarea>
+    </div>
+    <div style="margin-top: 5%;">
+        <input type="text" id="atchInfos" name="atchInfos" style="display: none;">
+        <form id="uploadForm" method="post" enctype="multipart/form-data">
+            <p>附件 : </p>
+            <input type="file" name="files" accept="image/*" multiple="multiple" style="width: 40%;margin-left: 5%;"/>
+            <input type="button" onclick="upfile()" value="上传" class="btn btn-primary"/>
+        </form>
+    </div>
+    <div style="text-align: center;margin-top: 5%;margin-left: -10%;">
+        <input type="button" th:value="${button}" onclick="adddata()" class="btn btn-primary"/>
+        <button th:onclick="'javascript:toList(\''+${publicinfotype}+'\');'"
+                class="btn btn-primary" style="margin-left: 5%;">返回
+        </button>
+    </div>
+</div>
+</body>
+</html>

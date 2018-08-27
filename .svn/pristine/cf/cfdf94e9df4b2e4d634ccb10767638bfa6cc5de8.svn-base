@@ -1,0 +1,8 @@
+package com.jz.quoteoperation.dept.service.impl;
+
+import com.jz.quoteoperation.dept.service.DeptService;
+import org.springframework.stereotype.Service;
+
+@Service(value = "deptService")
+public class DeptServiceImpl implements DeptService {
+}

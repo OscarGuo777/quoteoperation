@@ -1,0 +1,189 @@
+
+function changeModalStyle() {
+    $("input[name='platCd']").val("");
+    $("input[name='roleName']").val("");
+    $(":radio[name='status'][value='1']").prop("checked", "checked");
+    $(".modal-title").html("新增角色");
+    $("#saveButton").show();
+    $("#editButton").hide();
+}
+
+//新增用户
+function addRole(){
+    var platCd = $("input[name='platCd']").val();
+    var roleName = $("input[name='roleName']").val();
+    var status = $('input[name="status"]:checked').val();
+    $.ajax({
+        url: "/role/saveRole",
+        data: {platCd: platCd, roleName: roleName,
+            status: status},
+        type: "post",
+        dataType: "text",
+        success: function (result) {
+            if (JSON.parse(result).state == "true") {
+                toastr.success("保存成功!");
+            } else {
+                toastr.error("保存失败!");
+            }
+            loaddata();
+        },
+    })
+
+}
+
+function editRole() {
+    var platCd = $("input[name='platCd']").val();
+    var roleName = $("input[name='roleName']").val();
+    var status = $('input[name="status"]:checked').val();
+    var lgcSn = $("input[name='lgcSn']").val();
+    $.ajax({
+        url: "/role/editRole",
+        data: {platCd: platCd, roleName: roleName,
+            status: status,lgcSn:lgcSn},
+        type: "post",
+        dataType: "text",
+        success: function (result) {
+            if (JSON.parse(result).state == "true") {
+                toastr.success("保存成功!");
+            } else {
+                toastr.error("保存失败!");
+            }
+            loaddata();
+        },
+    })
+}
+
+
+
+//删除用户
+function deleteRole() {
+    var lgcSn = $("input[name='lgcSn']").val();
+    $.ajax({
+        url: "/role/deleteRole",
+        data: {lgcSn: lgcSn},
+        type: "post",
+        dataType: "text",
+        success: function (result) {
+            if (JSON.parse(result).state == "true") {
+                toastr.success("删除成功!");
+            } else {
+                toastr.error("删除失败!");
+            }
+            loaddata();
+        }
+    })
+}
+
+function loadtable() {
+    $("#roletable").bootstrapTable({
+        classes: 'table table-hover mb-0',
+        // striped: true,
+        pagination: true,
+        pageNumber: 1,
+        pageSize: 10,
+        pageList: [5, 10, 20, 30],
+        fit: true,
+        // toolbar: '#toolbar',
+        // search: true,
+        // showRefresh: true,
+        sortName: "lgcSn",
+        sortOrder: "desc",
+        columns: [{
+            field: 'lgcSn',
+            title: '序号',
+            align: 'center',
+            width: '100',
+            // switchable: true
+        }, {
+            field: 'platCd',
+            title: '关联平台',
+            align: 'center',
+            width: '100',
+            // switchable: true
+        }, {
+            field: 'roleNm',
+            title: '角色名称',
+            align: 'center',
+            width: '200',
+
+        }, {
+            field: 'status',
+            title: '状态',
+            align: 'center',
+            formatter:function (value,row,index) {
+                if(value == 1){
+                    return "启用";
+                }else if(value == 2){
+                    return "停用";
+                }
+            }
+        }, {
+            field: 'crtDt',
+            title: '创建时间',
+            align: 'center',
+            formatter: function (value, row, index) {
+                return dateFtt("yyyy-MM-dd", new Date(value));
+            }
+
+
+        }, {
+            field: 'usrAcnt',
+            title: '创建人',
+            width: '100',
+            align: 'center',
+
+
+        }, {
+            field: 'operate',
+            title: '操作',
+            width: '150',
+            align: 'center',
+            formatter: function (value, row, index) {
+                var a = '<a class="editRow" href="#" data-toggle="modal" data-target="#addModal" style="margin-right: 5px"   >' +
+                    '编辑</a>';
+                a += '<a class="deleteRow" href="#" data-toggle="modal" data-target="#myModal" >' +
+                    '删除</a>';
+                return a;
+            },
+            events: {
+                'click .editRow': function (e, value, row, index) {
+                    $("input[name='platCd']").val(row.platCd);
+                    $("input[name='roleName']").val(row.roleNm);
+                    $("input[name='lgcSn']").val(row.lgcSn);
+                    $(":radio[name='status'][value='" + row.status + "']").prop("checked", "checked");
+                    $(".modal-title").html("编辑角色");
+                    $("#saveButton").hide();
+                    $("#editButton").show();
+
+                },
+                'click .deleteRow': function (e, value, row, index) {
+                    $("#deleteModal").modal("show");
+                    $("#deleteInfo").html("你确定要删除角色"+row.roleNm+"?");
+                    $("input[name='lgcSn']").val(row.lgcSn);
+                    $(".modal-title").html("删除角色");
+                }
+            }
+        }],
+
+    });
+
+}
+
+//加载数据
+function loaddata() {
+    $.ajax({
+        type: "POST",
+        url: "/role/queryRole",
+        dataType: "json",
+        success: function (msg) {
+            $('#roletable').bootstrapTable('load', msg);
+            $(".pull-left.pagination-detail .pagination-info").empty();
+            $(".pull-left.pagination-detail .pagination-info").html("共 "+msg.length+" 条记录 ");
+            $("#roletable").bootstrapTable('hideLoading');
+        },
+        error: function () {
+            toastr.error("数据加载失败!");
+        }
+    });
+}
+

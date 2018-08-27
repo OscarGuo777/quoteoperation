@@ -1,0 +1,230 @@
+
+
+//时间控件
+function Datetime() {
+    $('#publicinfoquery1').datetimepicker({
+        language: 'zh-CN',//显示中文
+        format: 'yyyy-mm-dd',//显示格式
+        minView: "month",//设置只显示到月份
+        initialDate: new Date(),
+        autoclose: true,//选中自动关闭
+        todayBtn: true,//显示今日按钮
+        locale: moment.locale('zh-cn')
+    });
+    $('#publicinfoquery2').datetimepicker({
+        language: 'zh-CN',//显示中文
+        format: 'yyyy-mm-dd',//显示格式
+        minView: "month",//设置只显示到月份
+        initialDate: new Date(),
+        autoclose: true,//选中自动关闭
+        todayBtn: true,//显示今日按钮
+        locale: moment.locale('zh-cn')
+    });
+    //默认获取当前日期
+    var today = new Date();
+    var nowdate = (today.getFullYear()) + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+    //对日期格式进行处理
+    var date = new Date(nowdate);
+    var mon = date.getMonth() + 1;
+    var day = date.getDate();
+    var mydate = date.getFullYear() + "-" + (mon < 10 ? "0" + mon : mon) + "-01";
+    var mydate1 = date.getFullYear() + "-" + (mon < 10 ? "0" + mon : mon) + "-" + (day < 10 ? "0" + day : day);
+    $("#publicinfoquery1").val(mydate);
+    $("#publicinfoquery2").val(mydate1);
+}
+
+//创建表格
+function loadtable() {
+    $("#publicinfotable").bootstrapTable({
+        classes: 'table table-hover mb-0',
+        // striped: true,
+        pagination: true,
+        pageNumber: 1,
+        pageSize: 5,
+        pageList: [5, 10, 20, 30],
+        fit: true,
+        // toolbar: '#toolbar',
+        // search: true,
+        // showRefresh: true,
+        sortName: "lgcSn",
+        sortOrder: "desc",
+        columns: [{
+            field: 'lgcSn',
+            title: '序号',
+            align: 'center',
+            width: '100',
+            // switchable: true
+        }, {
+            field: 'infoTpcd',
+            title: '类型',
+            align: 'center',
+            width: '100',
+            // switchable: true
+        }, {
+            field: 'crtDt',
+            title: '发布日期',
+            align: 'center',
+            width: '200',
+            formatter: function (value, row, index) {
+                var time = row.crtDt;
+                var unixTimestamp = new Date(time);
+                commonTime = unixTimestamp.toLocaleString();
+                return commonTime;
+            }
+        }, {
+            field: 'infoTitle',
+            title: '标题',
+            align: 'center',
+        }, {
+            field: 'infoCntnt',
+            title: '内容',
+            align: 'center'
+        }, {
+            field: 'operate',
+            title: '操作',
+            width: '150',
+            align: 'center',
+            formatter: function (value, row, index) {
+                var a = '<a class="Information" href="#" data-toggle="modal" data-target="#myModal" >' +
+                    '<i class="fa fa-search"></i>查看详细</a>';
+                // var a = '<button class="Information btn btn-primary" data-toggle="modal" data-target="#myModal" >查看详细</button>';
+                return a;
+            },
+            events: {
+                'click .Information': function (e, value, row, index) {
+                    $.ajax({
+                        url: "/publicinfo/toInformationlist?lgcSn=" + row.lgcSn + "&publicinfotype=" + row.infoTpcd,
+                        dataType: "json",
+                        contentType: "application/json;charset=utf-8",
+                        success: function (data) {
+                            $("#fileup").hide();
+                            $("#fileshow").show();
+
+                            $("#Informationtitle").html(data[0][0]["infoTitle"])
+                            $("#InformationinfoCntnt").val(data[0][0]["infoCntnt"])
+                            //加载图片和名称
+                            if (data[1].length > 0) {
+                                $("#InformationatchInfos").empty();
+                                for (var i = 0; i < data[1].length; i++) {
+                                    var atchPath = data[1][i]["atchPath"]
+                                    var atchNm = data[1][i]["atchNm"]
+                                    $("#InformationatchInfos").append("<img src='" + atchPath + "'>" +
+                                        " <p>" + atchNm + "</p>");
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        }],
+    });
+    // 隐藏行
+    $("#publicinfotable").bootstrapTable('hideColumn', 'infoCntnt');
+    $("#publicinfotable").bootstrapTable('hideColumn', 'infoTpcd');
+    //隐藏加载提醒
+    $("#publicinfotable").bootstrapTable('hideLoading');
+}
+
+//加载数据
+function loaddata() {
+    var publicinfoquery1 = $("#publicinfoquery1").val();
+    var publicinfoquery2 = $("#publicinfoquery2").val();
+    var publicinfotype = $("#publicinfotype").val();
+
+    $.ajax({
+        type: "POST",
+        url: "/publicinfo/query",
+        data: {publicinfoquery1: publicinfoquery1, publicinfoquery2: publicinfoquery2, publicinfotype: publicinfotype},
+        // contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        success: function (msg) {
+            $('#publicinfotable').bootstrapTable('load', msg);
+            $(".pull-left.pagination-detail .pagination-info").empty();
+            $(".pull-left.pagination-detail .pagination-info").html("共 "+msg.length+" 条记录 ");
+        },
+        error: function () {
+            toastr.error("数据加载失败!");
+        }
+    });
+}
+
+//时间对象转换成字符串
+Date.prototype.toLocaleString = function () {
+    return this.getFullYear() + "/" + (this.getMonth() + 1) + "/" + this.getDate();
+};
+
+//点击查看表单概况信息
+function xingxi() {
+    $('#publicinfotable').on('click-row.bs.table', function (e, row, element) {
+        $("#publicinfotext").html("标题：" + row.infoTitle + "\r" +
+            "内容:\r&nbsp;&nbsp;" + (row.infoCntnt == undefined || row.infoCntnt == "" ? "" : row.infoCntnt));
+    });
+}
+
+
+//保存数据
+function adddata() {
+    var atchInfos = $("#atchInfos").val();
+    var infotitle = $("#infotitle").val();
+    var inforCntnt = $("#inforCntnt").val();
+    var publicinfotype = $("#publicinfotype").val();
+    var username = $("#username").html();
+    var authorities = $("#authorities").html();
+    console.log(username)
+    $.ajax({
+        url: "/publicinfo/addData",
+        data: {
+            infotitle: infotitle, inforCntnt: inforCntnt,
+            atchInfos: atchInfos, publicinfotype: publicinfotype,
+            username: username, authorities: authorities
+        },
+        type: "post",
+        dataType: "text",
+        // async: true,
+        success: function (result) {
+            if (JSON.parse(result).state == "true") {
+                toastr.success("保存成功!");
+            } else {
+                toastr.error("保存失败!");
+            }
+            loaddata();
+        },
+    })
+}
+
+// 上传图片
+function upfile() {
+    var formData = new FormData($("#uploadForm")[0]);
+    $.ajax({
+        url: "/file/upload",
+        data: formData,
+        type: "Post",
+        dataType: "json",
+        cache: false,//上传文件无需缓存
+        processData: false,//用于对data参数进行序列化处理 这里必须false
+        contentType: false, //必须
+        success: function (result) {
+            $("#atchInfos").val(JSON.stringify(result));
+            toastr.success("上传成功!");
+        },
+        error: function () {
+            toastr.error("上传失败!");
+        }
+    })
+}
+
+// 判断图片格式
+function uploadImg() {
+    var _name, _fileName, personsFile;
+    personsFile = document.getElementById("personsFile");
+    _name = personsFile.value;
+    _fileName = _name.substring(_name.lastIndexOf(".") + 1).toLowerCase();
+    if (_fileName !== "png" && _fileName !== "jpg") {
+        alert("上传图片格式不正确，请重新上传");
+    }
+}
+
+function changestyle() {
+    $("#fileup").show();
+    $("#fileshow").hide();
+}

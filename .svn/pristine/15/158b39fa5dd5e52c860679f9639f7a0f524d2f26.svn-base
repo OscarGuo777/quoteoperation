@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <script type="text/javascript"
+            th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/popper.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap-table.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap-table-zh-CN.js}"></script>
+    <script type="text/javascript" th:src="@{/js/moment-with-locales.js}"></script>
+    <script type="text/javascript" th:src="@{/js/role/role.js}"></script>
+    <!--toastr弹窗工具-->
+    <script type="text/javascript" th:src="@{/js/toastr.js}"></script>
+    <link type="text/css"  th:href="@{/css/toastr.css}" rel="stylesheet"/>
+    <link type="text/css"  th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <title>角色列表</title>
+</head>
+
+
+<body>
+
+<script>
+
+
+    $(function () {
+        //初始化表格
+        loadtable();
+        //ajax加载数据
+        loaddata();
+
+    });
+
+
+</script>
+
+<div>
+    <button class="btn btn-primary" data-toggle="modal" data-target="#addModal" onclick="changeModalStyle()"
+            th:text="新增" ></button>
+    <div class="table-responsive">
+        <table id="roletable"></table>
+    </div>
+
+    <div class="modal fade" id="deleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">提示</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form th:action="@{/role/deleteRole}" method="post" id="delete_role_form">
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+
+                        <span id="deleteInfo"></span>
+                        <input type="text"  name="lgcSn" style="display:none;"/>
+                    </div>
+
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="deleteRole()">确定</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">新增角色</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+                        关联平台：<input type="text" name="platCd" /><br>
+                        角色名称：<input type="text" name="roleName" style="margin-top: 10px" /><br>
+                        <input style="display: none" type="text" name="lgcSn"></input>
+                        <label style="margin-top: 10px">状态：</label>
+                        <input type="radio" name="status" value='1' checked/><label>启用</label>
+                        <input type="radio" name="status" value="2"/><label>未启用</label>
+                    </div>
+
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <button id="saveButton" type="button" class="btn btn-primary" data-dismiss="modal" onclick="addRole()">确定</button>
+                        <button id="editButton" type="button" class="btn btn-primary" data-dismiss="modal" onclick="editRole()" style="display: none">确定</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <!--<table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>关联平台</th>
+            <th>角色名称</th>
+            <th>状态</th>
+            <th>创建时间</th>
+            <th>创建人</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody th:each="role:${roleList} ">
+        <td th:text="${role.platCd}"></td>
+        <td th:text="${role.roleNm}"></td>
+        <td th:text="${role.status}"></td>
+        <td th:text="${role.crtDt}"></td>
+        <td th:text="${role.crtUsrId}"></td>
+        <td>
+            <a  href="javascript:void(0);" th:onclick="'javascript:editRole(\''+${role.platCd}+'\',\''+${role.roleNm}+'\',\''+${role.status}+'\',\''+${role.lgcSn}+'\');'" >编辑</a>
+            <a  href="javascript:void(0);" th:onclick="'javascript:deleteRole(\''+${role.lgcSn}+'\',\''+${role.roleNm}+'\');'" >删除</a>
+        </td>
+        </tbody>
+    </table>-->
+
+    <div class="table-responsive">
+        <table id="roletable">
+        </table>
+    </div>
+
+
+</div>
+</body>
+</html>

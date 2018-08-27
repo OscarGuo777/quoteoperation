@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <script type="text/javascript"
+            th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/popper.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap-table.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap-table-zh-CN.js}"></script>
+    <script type="text/javascript" th:src="@{/js/moment-with-locales.js}"></script>
+    <script type="text/javascript" th:src="@{/js/dict/dict.js}"></script>
+    <link type="text/css"  th:href="@{/css/bootstrap.min.css}"
+          rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <title>字典列表</title>
+
+</head>
+<body>
+<div class="container">
+    <div style="margin: 50px 0px">
+        <input type="button" class="btn btn-primary" value="新增" onclick="addDict()" />
+    </div>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>字典编码</th>
+            <th>字典名称</th>
+            <th>状态</th>
+            <th>明细明称</th>
+            <th>创建时间</th>
+            <th>创建人</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody th:each="dict:${dictList} ">
+        <td th:text="${dict.dictCd}"></td>
+        <td th:text="${dict.dictNm}"></td>
+        <td th:text="${dict.status}"></td>
+        <td th:each="dictDetail:${dict.dictDetailList}">
+            <span th:text="${dictDetail.dtlCd+dictDetail.dtlNm}"/>
+        </td>
+        <td th:text="${dict.crtDt}"></td>
+        <td th:text="${dict.crtUsrId}"></td>
+        <td>
+            <a  href="javascript:void(0);" th:onclick="'javascript:editDict(\''+${dict.dictCd}+'\',\''+${dict.dictNm}+'\',\''+${dict.status}+'\',\''+${dict.lgcSn}+'\');'" >编辑</a>
+            <a  href="javascript:void(0);" th:onclick="'javascript:deleteDict(\''+${dict.lgcSn}+'\',\''+${dict.dictNm}+'\');'" >删除</a>
+        </td>
+        </tbody>
+    </table>
+
+    <div class="modal fade" id="deleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">提示</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form th:action="@{/dict/deleteDict}" method="post" id="delete_dict_form">
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+
+                        <span id="deleteInfo"></span>
+                        <input type="text"  name="lgcSndel" th:value="${lgcSn}" style="display:none;"/>
+                    </div>
+
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" data-dismiss="modal" id="deleteConfirm">确定</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">新增角色</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form th:action="@{/dict/saveDict}" method="post" id="add_dict_form">
+                    <!-- 模态框主体 -->
+                    <div class="modal-body">
+                        字典编码：<input type="text" name="dictCd" /><br>
+                        字典名称：<input type="text" name="dictname" /><br>
+                        明细编码：<input type="text" name="dtlCd" /><br>
+                        明细名称：<input type="text" name="dtlNm" /><br>
+                        <input style="display: none" type="text" name="lgcSn"></input>
+                        <label>状态：</label>
+                        <input type="radio" name="status" value='1' checked/><label>启用</label>
+                        <input type="radio" name="status" value="2"/><label>未启用</label>
+                    </div>
+
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" data-dismiss="modal" id="submitButton">确定</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

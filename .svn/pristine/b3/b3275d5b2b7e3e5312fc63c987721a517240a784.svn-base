@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jz.quoteoperation.suggestion.dao.SuggestionMapper">
+  <resultMap id="BaseResultMap" type="com.jz.quoteoperation.suggestion.po.Suggestion">
+    <result column="LGC_SN" jdbcType="INTEGER" property="lgcSn" />
+    <result column="SGTN_USR_ID" jdbcType="INTEGER" property="sgtnUsrId" />
+    <result column="SGTN_TPCD" jdbcType="CHAR" property="sgtnTpcd" />
+    <result column="SGTN_CNTNT" jdbcType="VARCHAR" property="sgtnCntnt" />
+    <result column="CRT_DT" jdbcType="DATE" property="crtDt" />
+    <result column="RPLY_USR_ID" jdbcType="INTEGER" property="rplyUsrId" />
+    <result column="RPLY_CNTNT" jdbcType="VARCHAR" property="rplyCntnt" />
+    <result column="RPLY_DT" jdbcType="DATE" property="rplyDt" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    LGC_SN, SGTN_USR_ID, SGTN_TPCD, SGTN_CNTNT, CRT_DT, RPLY_USR_ID, RPLY_CNTNT, RPLY_DT
+  </sql>
+  <select id="selectByExample" parameterType="com.jz.quoteoperation.suggestion.po.SuggestionExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from qo_suggestion
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.jz.quoteoperation.suggestion.po.SuggestionExample">
+    delete from qo_suggestion
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.jz.quoteoperation.suggestion.po.Suggestion">
+    insert into qo_suggestion (LGC_SN, SGTN_USR_ID, SGTN_TPCD, 
+      SGTN_CNTNT, CRT_DT, RPLY_USR_ID, 
+      RPLY_CNTNT, RPLY_DT)
+    values (#{lgcSn,jdbcType=INTEGER}, #{sgtnUsrId,jdbcType=INTEGER}, #{sgtnTpcd,jdbcType=CHAR}, 
+      #{sgtnCntnt,jdbcType=VARCHAR}, #{crtDt,jdbcType=DATE}, #{rplyUsrId,jdbcType=INTEGER}, 
+      #{rplyCntnt,jdbcType=VARCHAR}, #{rplyDt,jdbcType=DATE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.jz.quoteoperation.suggestion.po.Suggestion">
+    insert into qo_suggestion
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="lgcSn != null">
+        LGC_SN,
+      </if>
+      <if test="sgtnUsrId != null">
+        SGTN_USR_ID,
+      </if>
+      <if test="sgtnTpcd != null">
+        SGTN_TPCD,
+      </if>
+      <if test="sgtnCntnt != null">
+        SGTN_CNTNT,
+      </if>
+      <if test="crtDt != null">
+        CRT_DT,
+      </if>
+      <if test="rplyUsrId != null">
+        RPLY_USR_ID,
+      </if>
+      <if test="rplyCntnt != null">
+        RPLY_CNTNT,
+      </if>
+      <if test="rplyDt != null">
+        RPLY_DT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="lgcSn != null">
+        #{lgcSn,jdbcType=INTEGER},
+      </if>
+      <if test="sgtnUsrId != null">
+        #{sgtnUsrId,jdbcType=INTEGER},
+      </if>
+      <if test="sgtnTpcd != null">
+        #{sgtnTpcd,jdbcType=CHAR},
+      </if>
+      <if test="sgtnCntnt != null">
+        #{sgtnCntnt,jdbcType=VARCHAR},
+      </if>
+      <if test="crtDt != null">
+        #{crtDt,jdbcType=DATE},
+      </if>
+      <if test="rplyUsrId != null">
+        #{rplyUsrId,jdbcType=INTEGER},
+      </if>
+      <if test="rplyCntnt != null">
+        #{rplyCntnt,jdbcType=VARCHAR},
+      </if>
+      <if test="rplyDt != null">
+        #{rplyDt,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.jz.quoteoperation.suggestion.po.SuggestionExample" resultType="java.lang.Long">
+    select count(*) from qo_suggestion
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update qo_suggestion
+    <set>
+      <if test="record.lgcSn != null">
+        LGC_SN = #{record.lgcSn,jdbcType=INTEGER},
+      </if>
+      <if test="record.sgtnUsrId != null">
+        SGTN_USR_ID = #{record.sgtnUsrId,jdbcType=INTEGER},
+      </if>
+      <if test="record.sgtnTpcd != null">
+        SGTN_TPCD = #{record.sgtnTpcd,jdbcType=CHAR},
+      </if>
+      <if test="record.sgtnCntnt != null">
+        SGTN_CNTNT = #{record.sgtnCntnt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.crtDt != null">
+        CRT_DT = #{record.crtDt,jdbcType=DATE},
+      </if>
+      <if test="record.rplyUsrId != null">
+        RPLY_USR_ID = #{record.rplyUsrId,jdbcType=INTEGER},
+      </if>
+      <if test="record.rplyCntnt != null">
+        RPLY_CNTNT = #{record.rplyCntnt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.rplyDt != null">
+        RPLY_DT = #{record.rplyDt,jdbcType=DATE},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update qo_suggestion
+    set LGC_SN = #{record.lgcSn,jdbcType=INTEGER},
+      SGTN_USR_ID = #{record.sgtnUsrId,jdbcType=INTEGER},
+      SGTN_TPCD = #{record.sgtnTpcd,jdbcType=CHAR},
+      SGTN_CNTNT = #{record.sgtnCntnt,jdbcType=VARCHAR},
+      CRT_DT = #{record.crtDt,jdbcType=DATE},
+      RPLY_USR_ID = #{record.rplyUsrId,jdbcType=INTEGER},
+      RPLY_CNTNT = #{record.rplyCntnt,jdbcType=VARCHAR},
+      RPLY_DT = #{record.rplyDt,jdbcType=DATE}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jz.quoteoperation.common.atchinfo.dao.AttachRlinInfoMapper">
+  <resultMap id="BaseResultMap" type="com.jz.quoteoperation.common.atchinfo.po.AttachRlinInfo">
+    <result column="LGC_SN" jdbcType="INTEGER" property="lgcSn" />
+    <result column="ATCH_SN" jdbcType="INTEGER" property="atchSn" />
+    <result column="BS_SN" jdbcType="INTEGER" property="bsSn" />
+    <result column="BS_TPCD" jdbcType="CHAR" property="bsTpcd" />
+    <result column="CRT_DT" jdbcType="DATE" property="crtDt" />
+    <result column="CRT_USR_ID" jdbcType="INTEGER" property="crtUsrId" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    LGC_SN, ATCH_SN, BS_SN, BS_TPCD, CRT_DT, CRT_USR_ID
+  </sql>
+  <select id="selectByExample" parameterType="com.jz.quoteoperation.common.atchinfo.po.AttachRlinInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from qo_attach_rltn_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.jz.quoteoperation.common.atchinfo.po.AttachRlinInfoExample">
+    delete from qo_attach_rltn_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.jz.quoteoperation.common.atchinfo.po.AttachRlinInfo">
+    insert into qo_attach_rltn_info (LGC_SN, ATCH_SN, BS_SN, 
+      BS_TPCD, CRT_DT, CRT_USR_ID)
+    values (#{lgcSn,jdbcType=INTEGER}, #{atchSn,jdbcType=INTEGER}, #{bsSn,jdbcType=INTEGER}, 
+      #{bsTpcd,jdbcType=CHAR}, #{crtDt,jdbcType=DATE}, #{crtUsrId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.jz.quoteoperation.common.atchinfo.po.AttachRlinInfo">
+    insert into qo_attach_rltn_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="lgcSn != null">
+        LGC_SN,
+      </if>
+      <if test="atchSn != null">
+        ATCH_SN,
+      </if>
+      <if test="bsSn != null">
+        BS_SN,
+      </if>
+      <if test="bsTpcd != null">
+        BS_TPCD,
+      </if>
+      <if test="crtDt != null">
+        CRT_DT,
+      </if>
+      <if test="crtUsrId != null">
+        CRT_USR_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="lgcSn != null">
+        #{lgcSn,jdbcType=INTEGER},
+      </if>
+      <if test="atchSn != null">
+        #{atchSn,jdbcType=INTEGER},
+      </if>
+      <if test="bsSn != null">
+        #{bsSn,jdbcType=INTEGER},
+      </if>
+      <if test="bsTpcd != null">
+        #{bsTpcd,jdbcType=CHAR},
+      </if>
+      <if test="crtDt != null">
+        #{crtDt,jdbcType=DATE},
+      </if>
+      <if test="crtUsrId != null">
+        #{crtUsrId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.jz.quoteoperation.common.atchinfo.po.AttachRlinInfoExample" resultType="java.lang.Long">
+    select count(*) from qo_attach_rltn_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update qo_attach_rltn_info
+    <set>
+      <if test="record.lgcSn != null">
+        LGC_SN = #{record.lgcSn,jdbcType=INTEGER},
+      </if>
+      <if test="record.atchSn != null">
+        ATCH_SN = #{record.atchSn,jdbcType=INTEGER},
+      </if>
+      <if test="record.bsSn != null">
+        BS_SN = #{record.bsSn,jdbcType=INTEGER},
+      </if>
+      <if test="record.bsTpcd != null">
+        BS_TPCD = #{record.bsTpcd,jdbcType=CHAR},
+      </if>
+      <if test="record.crtDt != null">
+        CRT_DT = #{record.crtDt,jdbcType=DATE},
+      </if>
+      <if test="record.crtUsrId != null">
+        CRT_USR_ID = #{record.crtUsrId,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update qo_attach_rltn_info
+    set LGC_SN = #{record.lgcSn,jdbcType=INTEGER},
+      ATCH_SN = #{record.atchSn,jdbcType=INTEGER},
+      BS_SN = #{record.bsSn,jdbcType=INTEGER},
+      BS_TPCD = #{record.bsTpcd,jdbcType=CHAR},
+      CRT_DT = #{record.crtDt,jdbcType=DATE},
+      CRT_USR_ID = #{record.crtUsrId,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

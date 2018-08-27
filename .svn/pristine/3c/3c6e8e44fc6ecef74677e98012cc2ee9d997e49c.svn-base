@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title sec:authentication="name"></title>
+    <script type="text/javascript" th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/popper.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+    <link type="text/css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+    <link type="text/css" th:href="@{/css/icons.css}" rel="stylesheet" />
+    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
+    <style type="text/css">
+        .breadcrumb > li + li:before {
+            color: #CCCCCC;
+            content: "/ ";
+            padding: 0 5px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="#">QO</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#vueapp" aria-controls="vueapp" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="vueapp">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">主页 <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="loadPage('demo1',this)">版本库管理</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="loadPage('demo2',this)">通知与参考资料</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="loadPage('demo2',this)">意见管理</a>
+            </li>
+            <!-- Dropdown -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                    系统管理
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#" >权限管理</a>
+                    <a class="dropdown-item" href="#">角色管理</a>
+                    <a class="dropdown-item" href="#" onclick="loadPage('/user/queryAllUser',this)">用户管理</a>
+                    <a class="dropdown-item" href="#">数据字典</a>
+                </div>
+            </li>
+        </ul>
+        <form class="form-inline">
+            <select class="form-control" name="bizMchId" id="bizMchId">
+                <option  th:each="bizMch:${dictLst}" th:value="${bizMch.code}" th:text="${bizMch.value}"
+                ></option>
+            </select>
+        </form>
+    </div>
+    <ul class="list-inline float-right mb-0">
+        <!-- language-->
+        <li class="list-inline-item dropdown notification-list hide-phone">
+            <a class="nav-link dropdown-toggle arrow-none waves-effect text-white" data-toggle="dropdown" href="#" role="button"
+               aria-haspopup="false" aria-expanded="false">
+                中文 <img th:src="@{/images/flags/china_flag.jpg}" class="ml-2" height="16" alt=""/>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right language-switch">
+                <a class="dropdown-item" href="#"><img th:src="@{/images/flags/us_flag.jpg}" alt="" height="16"/><span> Englist </span></a>
+                <a class="dropdown-item" href="#"><img th:src="@{/images/flags/italy_flag.jpg}" alt="" height="16"/><span> Italian </span></a>
+                <a class="dropdown-item" href="#"><img th:src="@{/images/flags/french_flag.jpg}" alt="" height="16"/><span> French </span></a>
+                <a class="dropdown-item" href="#"><img th:src="@{/images/flags/spain_flag.jpg}" alt="" height="16"/><span> Spanish </span></a>
+                <a class="dropdown-item" href="#"><img th:src="@{/images/flags/russia_flag.jpg}" alt="" height="16"/><span> Russian </span></a>
+            </div>
+        </li>
+        <li class="list-inline-item dropdown notification-list">
+            <a class="nav-link dropdown-toggle arrow-none waves-effect" data-toggle="dropdown" href="#" role="button"
+               aria-haspopup="false" aria-expanded="false">
+                <i class="ti-email noti-icon"></i>
+                <span class="badge badge-danger noti-icon-badge">5</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right dropdown-arrow dropdown-menu-lg">
+                <!-- item-->
+                <div class="dropdown-item noti-title">
+                    <h5><span class="badge badge-danger float-right">745</span>Messages</h5>
+                </div>
+
+                <!-- item-->
+                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                    <div class="notify-icon"><img th:src="@{/images/users/avatar-2.jpg}" alt="user-img" class="img-fluid rounded-circle" /> </div>
+                    <p class="notify-details"><b>Charles M. Jones</b><small class="text-muted">Dummy text of the printing and typesetting industry.</small></p>
+                </a>
+
+                <!-- item-->
+                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                    <div class="notify-icon"><img th:src="@{/images/users/avatar-3.jpg}" alt="user-img" class="img-fluid rounded-circle" /> </div>
+                    <p class="notify-details"><b>Thomas J. Mimms</b><small class="text-muted">You have 87 unread messages</small></p>
+                </a>
+
+                <!-- item-->
+                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                    <div class="notify-icon"><img th:src="@{/images/users/avatar-4.jpg}" alt="user-img" class="img-fluid rounded-circle" /> </div>
+                    <p class="notify-details"><b>Luis M. Konrad</b><small class="text-muted">It is a long established fact that a reader will</small></p>
+                </a>
+
+                <!-- All-->
+                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                    View All
+                </a>
+
+            </div>
+        </li>
+
+        <li class="list-inline-item dropdown notification-list">
+            <a class="nav-link dropdown-toggle arrow-none waves-effect" data-toggle="dropdown" href="#" role="button"
+               aria-haspopup="false" aria-expanded="false">
+                <i class="ti-bell noti-icon"></i>
+                <span class="badge badge-success noti-icon-badge">23</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right dropdown-arrow dropdown-menu-lg">
+                <!-- item-->
+                <div class="dropdown-item noti-title">
+                    <h5><span class="badge badge-danger float-right">87</span>Notification</h5>
+                </div>
+
+                <!-- item-->
+                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                    <div class="notify-icon bg-primary"><i class="mdi mdi-cart-outline"></i></div>
+                    <p class="notify-details"><b>Your order is placed</b><small class="text-muted">Dummy text of the printing and typesetting industry.</small></p>
+                </a>
+
+                <!-- item-->
+                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                    <div class="notify-icon bg-success"><i class="mdi mdi-message"></i></div>
+                    <p class="notify-details"><b>New Message received</b><small class="text-muted">You have 87 unread messages</small></p>
+                </a>
+
+                <!-- item-->
+                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                    <div class="notify-icon bg-warning"><i class="mdi mdi-martini"></i></div>
+                    <p class="notify-details"><b>Your item is shipped</b><small class="text-muted">It is a long established fact that a reader will</small></p>
+                </a>
+
+                <!-- All-->
+                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                    View All
+                </a>
+
+            </div>
+        </li>
+
+        <li class="list-inline-item dropdown notification-list">
+            <a class="nav-link dropdown-toggle arrow-none waves-effect nav-user" data-toggle="dropdown" href="#" role="button"
+               aria-haspopup="false" aria-expanded="false">
+                <img th:src="@{/images/users/avatar-1.jpg}" alt="user" class="rounded-circle">
+            </a>
+            <div class="dropdown-menu dropdown-menu-right profile-dropdown ">
+                <!-- item-->
+                <div class="dropdown-item noti-title">
+                    <h5>Welcome</h5>
+                </div>
+                <a class="dropdown-item" href="#"><i class="mdi mdi-account-circle m-r-5 text-muted"></i> Profile</a>
+                <a class="dropdown-item" href="#"><i class="mdi mdi-wallet m-r-5 text-muted"></i> My Wallet</a>
+                <a class="dropdown-item" href="#"><span class="badge badge-success float-right">5</span><i class="mdi mdi-settings m-r-5 text-muted"></i> Settings</a>
+                <a class="dropdown-item" href="#"><i class="mdi mdi-lock-open-outline m-r-5 text-muted"></i> Lock screen</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" th:href="@{/logout}"><i class="mdi mdi-logout m-r-5 text-muted"></i> Logout</a>
+            </div>
+        </li>
+
+    </ul>
+</nav>
+
+    <div class="container col-md-12" style="top: 65px" id="main_cnt">
+        <div class="page-content-wrapper ">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="page-title-box">
+                            <div class="btn-group float-right">
+                                <ol class="breadcrumb hide-phone p-0 m-0">
+                                    <li class="breadcrumb-item"><a href="/">主页</a></li>
+                                    <li class="breadcrumb-item active" id="cur_page_nm"></li>
+                                </ol>
+                            </div>
+                            <h4 class="page-title"></h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title end breadcrumb -->
+                <div class="row" >
+                    <div class="col-md-12 col-xl-12">
+                        <div class="card m-b-30">
+                            <div class="card-body new-user">
+                                <div class="row">
+                                    <div class="col-md-12 col-xl-12" id="content">
+                                    <!-- main content -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /content -->
+        </div>
+    </div>
+    <!-- /container -->
+
+<footer class="footer">
+    <p>&copy; Company 2017-2018 </p>
+</footer>
+<script>
+    $(document).ready(function(){
+        // 初始化内容
+        $("#main_cnt").hide();
+    });
+    function loadPage(url,obj) {
+        $("#main_cnt").show();
+        var atxt = $(obj).text();
+        $("#cur_page_nm").html(atxt);
+        $("h4.page-title").html(atxt);
+        $("#content").load(url);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+package com.jz.quoteoperation.user.controller;
+
+
+
+import com.alibaba.fastjson.JSON;
+import com.jz.quoteoperation.common.util.CommonUtil;
+import com.jz.quoteoperation.common.util.DateUtil;
+import com.jz.quoteoperation.common.util.StringUtil;
+import com.jz.quoteoperation.dept.po.DeptInfo;
+import com.jz.quoteoperation.dept.po.DeptInfoExample;
+import com.jz.quoteoperation.dept.service.DeptService;
+import com.jz.quoteoperation.user.bo.UserDepartBO;
+import com.jz.quoteoperation.user.bo.UserInfoBO;
+import com.jz.quoteoperation.user.po.UserInfo;
+import com.jz.quoteoperation.user.po.UserInfoExample;
+import com.jz.quoteoperation.user.service.UserService;
+import com.jz.quoteoperation.userdept.po.UserDept;
+import com.jz.quoteoperation.userdept.service.UserDeptService;
+import com.sun.org.apache.xpath.internal.operations.Mod;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Controller
+@RequestMapping("/user")
+public class UserController {
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private DeptService deptService;
+
+    @Autowired
+    private UserDeptService userDeptService;
+
+
+
+
+    @RequestMapping(value = "/queryUser1", method = RequestMethod.GET)
+    public String findAllUser1( String userName, String password) {
+        UserInfoExample example = new UserInfoExample();
+        example.or().andUsrAcntEqualTo(userName).andUsrPwdEqualTo(StringUtil.md5(password));
+
+        List<UserInfo> list = userService.selectByExample(example);
+
+        Map map = new HashMap();
+        Integer status = HttpServletResponse.SC_OK;
+        String errorMsg = "";
+        if(CommonUtil.isEmpty(list)){
+            status = 0;
+            errorMsg = "用户名或者密码错误";
+        }else{
+            String userStatus = list.get(0).getStatus();
+            if(userStatus.equals("2") ){
+                status = 0;
+                errorMsg = "用户已停用";
+            }else if(userStatus.equals("3")){
+                status = 0;
+                errorMsg = "用户已注销";
+            }
+        }
+
+        map.put("status", status);
+        map.put("errorMsg", errorMsg);
+        String json = JSON.toJSONString(map);
+        List<UserInfoBO> userInfoBOList = userService.queryUserAuth(list.get(0).getLgcSn());
+        return json;
+    }
+
+    @RequestMapping(value = "/login",method = RequestMethod.GET)
+    public String index() {
+
+        return "/login.html";
+    }
+
+    /**
+     * 查询所有用户
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/queryAllUser", method=RequestMethod.GET)
+    public String queryAllUSer(Model model){
+       /* UserInfoExample example = new UserInfoExample();
+        example.or();
+        List<UserInfo> userList = userService.selectByExample(example);
+        model.addAttribute("userList", userList);*/
+        List<UserDepartBO> userList = userService.queryAllUser();
+        model.addAttribute("userList", userList);
+        return "/user/userList.html";
+    }
+
+    /**
+     * 根据关键字查询用户
+     * @param keyword
+     * @param status
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/queryUserByKeyword", method = RequestMethod.POST)
+    public String queryUserByKeyword(String keyword,String status,Model model) {
+        Map<String, String> map = new HashMap<String,String>();
+        map.put("keyword",keyword);
+        map.put("status", status);
+        List<UserDepartBO> userList = userService.selectUserByKeyword(map);
+        model.addAttribute("userList", userList);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("status", status);
+        return "/user/userList.html";
+    }
+
+    /**\
+     * 保存用户
+     * @param useraccount
+     * @param usermobile
+     * @param username
+     * @param status
+     * @return
+     */
+    @RequestMapping(value = "/saveUser", method = RequestMethod.POST)
+    public String saveUser(String useraccount, String usermobile, String username,String status,String departname) {
+        UserInfo user = new UserInfo();
+        user.setUsrAcnt(useraccount);
+        user.setUsrMobi(usermobile);
+        user.setUsrNm(username);
+        user.setUsrPwd(StringUtil.encodePassword("888888"));
+        user.setStatus(status);
+        user.setCrtDt(new Date());
+        userService.insert(user);
+        Integer usrSN = user.getLgcSn();
+
+
+        DeptInfo dept = new DeptInfo();
+        dept.setDeptNm(departname);
+        dept.setCrtDt(new Date());
+        deptService.insert(dept);
+        Integer deptSN = dept.getLgcSn();
+
+        UserDept userDept = new UserDept();
+        userDept.setUsrSn(usrSN);
+        userDept.setDeptSn(deptSN);
+        userDeptService.insert(userDept);
+        return "redirect:/user/queryAllUser";
+    }
+
+    /**
+     * 编辑用户
+     * @param useraccount
+     * @param usermobile
+     * @param username
+     * @param lgcSn
+     * @param status
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/editUser",method = RequestMethod.POST)
+    public String editUser(String useraccount,String usermobile,String username,Integer lgcSn,String status,String departname,Model model){
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUsrAcnt(useraccount);
+        userInfo.setUsrMobi(usermobile);
+        userInfo.setUsrNm(username);
+        userInfo.setStatus(status);
+        userInfo.setLgcSn(lgcSn);
+        userService.updateByPrimaryKey(userInfo);
+
+        DeptInfoExample example = new DeptInfoExample();
+        example.or().andDeptNmEqualTo(departname);
+        List<DeptInfo> deptInfoList = deptService.selectByExample(example);
+        //如果查询到的部门集合0，则说明在数据库中不存在此部门，则在部门表中插入此部门且将userID和departId更新到user_dept表中。
+        //如果查询到的部门集合不为0 ，则说明在数据库中存在此部门。则只需要在user_dept中将部门和用户id进行更新
+        if(deptInfoList.size()==0){
+            DeptInfo deptInfo = new DeptInfo();
+            deptInfo.setDeptNm(departname);
+            deptInfo.setCrtDt(new Date());
+            deptService.insert(deptInfo);
+
+            UserDept userDept = new UserDept();
+            userDept.setDeptSn(deptInfo.getLgcSn());
+            userDept.setUsrSn(lgcSn);
+            userDeptService.updateByUserLgcSn(userDept);
+        }else{
+            //deptService.updateByPrimaryKey(deptInfoList.get(0));
+            UserDept userDept = new UserDept();
+            userDept.setDeptSn(deptInfoList.get(0).getLgcSn());
+            userDept.setUsrSn(lgcSn);
+            userDeptService.updateByUserLgcSn(userDept);
+        }
+        /*UserInfo userInfo = userInfos.get(0);
+        model.addAttribute("userInfo", userInfo);*/
+        return "redirect:/user/queryAllUser";
+    }
+
+    /**
+     * 删除用户
+     */
+
+    @RequestMapping(value = "/deleteUser",method = RequestMethod.POST)
+    public String deleteUser(Integer lgcSndel,Model model){
+        UserInfoExample example = new UserInfoExample();
+        example.or().andLgcSnEqualTo(lgcSndel);
+        userService.deleteByExample(example);
+        return "redirect:/user/queryAllUser";
+    }
+}

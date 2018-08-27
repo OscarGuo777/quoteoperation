@@ -1,0 +1,239 @@
+package com.jz.quoteoperation.wechat.controller;
+
+import com.jz.quoteoperation.wechat.util.HttpClientUtil;
+import com.jz.quoteoperation.wechat.util.PublicConstant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import com.jz.quoteoperation.wechat.util.Decript;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+
+@Controller
+@RequestMapping(value = "/wechatAccess")
+public class WechatAccess {
+
+    private final String token = "meichao";
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    /**
+     * 微信接入入口     url   http://80端口地址+/wechatAccess/index
+     */
+    @RequestMapping(value = "/index")
+    public void index(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String method = request.getMethod().toLowerCase();
+        response.setCharacterEncoding("UTF-8");
+        logger.info("method类型====" + method);
+        String timestamp;
+        if ("get".equals(method))
+        {
+            logger.info("进入签名校验get方法====");
+            String signature = request.getParameter("signature");
+            timestamp = request.getParameter("timestamp");
+            String nonce = request.getParameter("nonce");
+            String echostr = request.getParameter("echostr");
+            logger.info("signature==" + signature);
+            logger.info("timestamp==" + timestamp);
+            logger.info("nonce==" + nonce);
+            logger.info("echostr==" + echostr);
+
+            ArrayList<String> array = new ArrayList();
+            array.add(signature);
+            array.add(timestamp);
+            array.add(nonce);
+
+            String sortString = sort(token, timestamp, nonce);
+
+            String mytoken = Decript.SHA1(sortString);
+            if ((mytoken != null) && (mytoken != "") && (mytoken.equals(signature)))
+            {
+                logger.info("签名校验通过");
+                response.getWriter().print(echostr);
+            }
+            else
+            {
+                logger.info("签名校验失败");
+            }
+        }
+        else if ("post".equals(method))
+        {
+            logger.info("进入了post方法");
+
+           try
+            {
+                HttpClientUtil.map = parseXML(request);
+                for (Map.Entry<String, String> entry : HttpClientUtil.map.entrySet())
+                {
+                    System.out.println("key:" + (String)entry.getKey());
+                    System.out.println("value:" + (String)entry.getValue());
+                    System.out.println((String)entry.getKey() + ":=" + (String)entry.getValue());
+                }
+                String eventtype = (String)HttpClientUtil.map.get("Event");
+                logger.info("eventtype==" + eventtype);// 事件类型
+                if ("subscribe".equals(eventtype))  //关注
+                {
+                    String openid = (String)HttpClientUtil.map.get("FromUserName");
+                    logger.info("当前关注用户的 openid====" + openid);
+                    //String getuserinfourl = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" + GetAccess_Token.access_token + "&openid=" + openid + "&lang=zh_CN";
+                   /* HttpGet httpRequest = new HttpGet(getuserinfourl);
+                    HttpResponse response = HttpClientUtil.httpclient.execute(httpRequest);
+                    String result = EntityUtils.toString(response.getEntity());*/
+                   // logger.info("result===" + result);
+                    //logger.info("输入的内容==" + (String)HttpClientUtil.map.get("Content"));
+                    String sendXML = createXML("", eventtype);
+                    logger.info("sendXML==" + sendXML);
+
+                    response.getWriter().print(sendXML);
+                }
+                if ("unsubscribe".equals(eventtype))// 取消关注
+                {
+                    String openid = (String)HttpClientUtil.map.get("FromUserName");
+                    System.out.println("取消关注的用户的 openid====" + openid);
+                    Map<String, Object> map = new HashMap();
+                    map.put("openid", openid);
+                    //this.wxSelfReplyService.deletewxuserinfo(map);
+                }
+
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+           // System.out.println("-----  post����");
+        }
+    }
+
+    public static String sort(String token, String timestamp, String nonce)
+    {
+        String[] strArray = { token, timestamp, nonce };
+        Arrays.sort(strArray);
+        StringBuilder s = new StringBuilder();
+        String[] arrayOfString1;
+        int j = (arrayOfString1 = strArray).length;
+        for (int i = 0; i < j; i++)
+        {
+            String str = arrayOfString1[i];
+            s.append(str);
+        }
+        return s.toString();
+
+    }
+    public Map<String, String> parseXML(HttpServletRequest request) throws Exception
+        {
+            Map<String, String> map = new HashMap();
+
+            InputStream in = request.getInputStream();
+
+            SAXReader reader = new SAXReader();
+            Document d = reader.read(in);
+            String requestXML = d.asXML();
+            String subXML = requestXML.split(">")[0] + ">";
+            requestXML = requestXML.substring(subXML.length());
+
+            Element root = d.getRootElement();
+            List<Element> elementList = root.elements();
+            for (Element e : elementList) {
+                map.put(e.getName(), e.getText());
+            }
+            map.put("requestXML", requestXML);
+
+            in.close();
+            return map;
+        }
+
+    /**
+     * 被动回复信息以及关注是发送欢迎语
+     * @param keycode
+     * @param eventtype
+     * @return
+     */
+
+    public String createXML(String keycode, String eventtype)
+    {
+        Map<String, String> map = HttpClientUtil.map;
+        Date d = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String xml = "<xml>";
+        if ("subscribe".equals(eventtype))
+        {
+
+            xml = xml + "<ToUserName><![CDATA[" + (String)map.get("FromUserName") + "]]></ToUserName>";
+            xml = xml + "<FromUserName><![CDATA[" + (String)map.get("ToUserName") + "]]></FromUserName>";
+            xml = xml + "<CreateTime>" + sdf.format(d) + "</CreateTime>";
+            xml = xml + "<MsgType><![CDATA[text]]></MsgType>";
+            xml = xml + "<Content><![CDATA[" + PublicConstant.followWelcoming  + "]]></Content>";
+
+        }
+        xml = xml + "</xml>";
+        return xml;
+      /*  boolean isValid = this.wxSelfReplyService.valikeyword(keycode, this.ids);
+        if (!isValid)
+        {
+           // WxSelfReply wxselfreply = this.wxSelfReplyService.selectkeyword(keycode);
+            String msgtype = wxselfreply.getMsgtype();
+            String xml = "<xml>";
+            xml = xml + "\t<ToUserName><![CDATA[" + (String)map.get("FromUserName") + "]]></ToUserName>";
+            xml = xml + "\t<FromUserName><![CDATA[" + (String)map.get("ToUserName") + "]]></FromUserName>";
+            xml = xml + "\t<CreateTime>" + sdf.format(d) + "</CreateTime>";
+            xml = xml + "\t<MsgType><![CDATA[" + msgtype + "]]></MsgType>";
+            if ("text".equals(msgtype)) {
+                xml = xml + "\t<Content><![CDATA[" + wxselfreply.getContent() + "]]></Content>";
+            }
+            if ("image".equals(msgtype))
+            {
+                xml = xml + "\t<Image>";
+                xml = xml + "\t<MediaId><![CDATA[" + wxselfreply.getMediaid() + "]]></MediaId>";
+                xml = xml + "\t</Image>";
+            }
+            "voice".equals(msgtype);
+            if ("video".equals(msgtype))
+            {
+                xml = xml + "\t<Video>";
+                xml = xml + "\t<MediaId><![CDATA[" + wxselfreply.getMediaid() + "]]></MediaId>";
+                xml = xml + "\t<Title><![CDATA[" + wxselfreply.getTitle() + "]]></Title>";
+                xml = xml + "\t<Description><![CDATA[" + wxselfreply.getDescription() + "]]></Description>";
+                xml = xml + "\t</Video>";
+            }
+            if ("music".equals(msgtype))
+            {
+                xml = xml + "\t<Music>";
+                xml = xml + "\t<MusicURL><![CDATA[" + wxselfreply.getMusicURL() + "]]></MusicURL>";
+                xml = xml + "\t<HQMusicUrl><![CDATA[" + wxselfreply.getHqmusicurl() + "]]></HQMusicUrl>";
+                xml = xml + "\t<ThumbMediaId><![CDATA[" + wxselfreply.getThumbmediaid() + "]]></ThumbMediaId>";
+                xml = xml + "\t<Title><![CDATA[" + wxselfreply.getTitle() + "]]></Title>";
+                xml = xml + "\t<Description><![CDATA[" + wxselfreply.getDescription() + "]]></Description>";
+                xml = xml + "\t</Music>";
+            }
+            if ("news".equals(msgtype))
+            {
+                xml = xml + "\t<Articles>";
+                for (int i = 0; i < Integer.parseInt(wxselfreply.getArticlecount()); i++)
+                {
+                    xml = xml + "<item>";
+                    xml = xml + "<Title><![CDATA[" + wxselfreply.getPictitle().split(",")[i] + "]]></Title>";
+                    xml = xml + "<Description><![CDATA[" + wxselfreply.getPicdescription().split(",")[i] + "]]></Description>";
+                    xml = xml + "<PicUrl><![CDATA[" + wxselfreply.getPicurl().split(",")[i] + "]]></PicUrl>";
+                    xml = xml + "<Url><![CDATA[" + wxselfreply.getUrl().split(",")[i] + "]]></Url>";
+                    xml = xml + "</item>";
+                }
+                xml = xml + "\t</Articles>";
+            }
+            xml = xml + "</xml>";
+
+            return xml;
+        }*/
+       // return "";
+    }
+}

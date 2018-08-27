@@ -1,0 +1,22 @@
+package com.jz.quoteoperation.common.atch_info.dao;
+
+import com.jz.quoteoperation.common.atch_info.po.attachRlinInfo;
+import com.jz.quoteoperation.common.atch_info.po.attachRlinInfoExample;
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
+
+public interface attachRlinInfoMapper {
+    long countByExample(attachRlinInfoExample example);
+
+    int deleteByExample(attachRlinInfoExample example);
+
+    int insert(attachRlinInfo record);
+
+    int insertSelective(attachRlinInfo record);
+
+    List<attachRlinInfo> selectByExample(attachRlinInfoExample example);
+
+    int updateByExampleSelective(@Param("record") attachRlinInfo record, @Param("example") attachRlinInfoExample example);
+
+    int updateByExample(@Param("record") attachRlinInfo record, @Param("example") attachRlinInfoExample example);
+}

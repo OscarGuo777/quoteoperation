@@ -1,0 +1,7 @@
+{
+  "timestamp": "2018-08-12T14:47:08.512+0000",
+  "status": 500,
+  "error": "Internal Server Error",
+  "message": "\r\n### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Table 'ycs2_data.qo_user_info' doesn't exist\r\n### The error may exist in file [D:\\dev\\quoteoperation\\target\\classes\\mapping\\UserInfoMapper.xml]\r\n### The error may involve com.jz.quoteoperation.demo.dao.UserInfoMapper.selectByExample-Inline\r\n### The error occurred while setting parameters\r\n### SQL: select                 LGC_SN, OPEN_ID, USR_ACNT, USR_PWD, USR_NM, USR_MOBI, STATUS, CRT_DT, CRT_USR_ID,      UPD_DT, UPD_USR_ID         from qo_user_info                    WHERE (  CRT_DT is null )\r\n### Cause: java.sql.SQLSyntaxErrorException: Table 'ycs2_data.qo_user_info' doesn't exist\n; bad SQL grammar []; nested exception is java.sql.SQLSyntaxErrorException: Table 'ycs2_data.qo_user_info' doesn't exist",
+  "path": "/user/queryDemo"
+}

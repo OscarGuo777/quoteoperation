@@ -1,0 +1,21 @@
+package com.jz.quoteoperation.demo.service.impl;
+
+import com.jz.quoteoperation.demo.dao.UserInfoMapper;
+import com.jz.quoteoperation.demo.po.UserInfo;
+import com.jz.quoteoperation.demo.po.UserInfoExample;
+import com.jz.quoteoperation.demo.service.DemoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service(value = "demoService")
+public class DemoServiceImpl implements DemoService {
+    @Autowired
+    private UserInfoMapper userInfoMapper;
+
+    @Override
+    public List<UserInfo> selectByExample(UserInfoExample example) {
+        return userInfoMapper.selectByExample(example);
+    }
+}

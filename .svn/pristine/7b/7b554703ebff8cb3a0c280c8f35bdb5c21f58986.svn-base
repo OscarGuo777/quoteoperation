@@ -1,0 +1,29 @@
+package com.jz.quoteoperation.config;
+
+import com.alibaba.fastjson.JSONObject;
+import com.jz.quoteoperation.dict.po.DictInfo;
+import com.jz.quoteoperation.dict.service.DictService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.json.JacksonJsonParser;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Component
+@Order(value = 3)
+public class InitializeConfiguration implements CommandLineRunner {
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private DictService dictService;
+
+    @Override
+    public void run(String... args) throws Exception {
+        List<DictInfo> list = dictService.selectDictAllByCode(null);//初始化数据字典；
+        logger.info(list.size()+" 数据字典初始化完成！");
+    }
+}

@@ -1,0 +1,40 @@
+
+//新增用户
+function addDict(){
+    $("#addModal").modal("show");
+    $("#submitButton").click(function(){
+        $("#add_dict_form").submit();
+    })
+}
+//删除用户
+function deleteDict(lgcSn,dictNm) {
+    $("#deleteModal").modal("show");
+    $("#deleteInfo").html("你确定要删除字典项"+dictNm+"?");
+    $("input[name='lgcSndel']").val(lgcSn)
+    /* $("#delete_user_form").onclick(function () {
+         $("#delete_user_form").submit();
+     });*/
+    $("#deleteConfirm").click(function(){
+        $("#delete_dict_form").submit();
+    })
+}
+
+//编辑用户
+function editDict(dictCd,dictNm,dtlCd,dtlNm,status,lgcSn) {
+    $("#addModal").modal("show");
+    $("input[name='dictCd']").val(dictCd);
+    $("input[name='dictname']").val(dictNm);
+    $("input[name='dtlCd']").val(dtlCd);
+    $("input[name='dtlNm']").val(dtlNm);
+    $("input[name='lgcSn']").val(lgcSn);
+    $(":radio[name='status'][value='" + status + "']").prop("checked", "checked");
+    $(".modal-title").html("编辑字典");
+
+    $("#submitButton").click(function () {
+        debugger
+        var newUrl = '/dict/editDict';    //设置新提交地址
+        $("#add_dict_form").attr('action', newUrl);    //通过jquery为action属性赋值
+        $("#add_dict_form").submit();    //提交ID为myform的表单
+    })
+
+}

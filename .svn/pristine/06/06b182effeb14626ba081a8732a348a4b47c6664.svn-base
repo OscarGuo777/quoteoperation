@@ -1,0 +1,17 @@
+package com.jz.quoteoperation.wechat.Feigninterface;
+
+
+import feign.Headers;
+import feign.Param;
+import feign.RequestLine;
+import org.springframework.stereotype.Service;
+
+@Headers("Content-Type: application/json")
+@Service
+public interface FeignHttp {
+
+    @RequestLine("GET /cgi-bin/token?grant_type=client_credential&appid={app_key}&secret={app_secret}")
+    public Object  getAccessToken(@Param("app_key") String app_key, @Param("app_secret") String app_secret);
+
+
+}

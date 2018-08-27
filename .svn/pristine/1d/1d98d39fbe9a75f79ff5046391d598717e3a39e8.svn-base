@@ -1,0 +1,14 @@
+package com.jz.quoteoperation;
+
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+@MapperScan("com.jz.quoteoperation.*.dao")
+public class QuoteoperationApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(QuoteoperationApplication.class, args);
+    }
+}

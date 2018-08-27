@@ -1,0 +1,122 @@
+package com.jz.quoteoperation.role.controller;
+
+import com.alibaba.fastjson.JSONArray;
+import com.jz.quoteoperation.common.service.CommonService;
+import com.jz.quoteoperation.role.bo.RoleUserBO;
+import com.jz.quoteoperation.role.po.RoleInfo;
+import com.jz.quoteoperation.role.po.RoleInfoExample;
+import com.jz.quoteoperation.role.service.RoleService;
+import com.jz.quoteoperation.user.bo.UserInfoBO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Controller
+@RequestMapping(value = "/role")
+public class RoleController {
+
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private CommonService commonService;
+
+    /**
+     * 查看所有角色
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/queryRole")
+    public String queryRole() {
+        List<RoleUserBO> roleList = roleService.selectRoleUser();
+        String json = JSONArray.toJSONString(roleList);
+        return json;
+    }
+
+    @RequestMapping(value = "/toList")
+    public String toList() {
+        return "/role/roleList";
+    }
+
+    /**
+     * 新增角色
+     * @param platCd
+     * @param roleName
+     * @param status
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/saveRole", method = RequestMethod.POST)
+    public Map saveRole(String platCd,String roleName,String status) {
+        Map<String, String> map = new HashMap<String, String>();
+        RoleInfo role = new RoleInfo();
+        role.setPlatCd(platCd);
+        role.setRoleNm(roleName);
+        role.setStatus(status);
+        role.setCrtDt(new Date());
+        UserInfoBO currentUser = commonService.getCurrentUser();
+        role.setCrtUsrId(currentUser.getLgcSn());
+        int insert = roleService.insert(role);
+       if(insert>0){
+           map.put("state","true");
+       }else{
+           map.put("state", "false");
+       }
+        return map;
+    }
+
+    /**
+     * 删除角色
+     * @param lgcSn
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/deleteRole",method = RequestMethod.POST)
+    public Map deleteRole(Integer lgcSn){
+        Map<String, String> map = new HashMap<String,String>();
+        RoleInfoExample example = new RoleInfoExample();
+        example.or().andLgcSnEqualTo(lgcSn);
+        int delete = roleService.deleteByExample(example);
+        if (delete > 0) {
+            map.put("state", "true");
+        }else{
+            map.put("state", "false");
+        }
+        return map;
+    }
+
+    /**
+     * 编辑角色
+     * @param platCd
+     * @param roleName
+     * @param status
+     * @param lgcSn
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/editRole",method = RequestMethod.POST)
+    public Map editRole(String platCd,String roleName,String status,Integer lgcSn){
+        Map<String, String> map = new HashMap<String,String>();
+        RoleInfo roleInfo = new RoleInfo();
+        roleInfo.setPlatCd(platCd);
+        roleInfo.setRoleNm(roleName);
+        roleInfo.setStatus(status);
+        roleInfo.setLgcSn(lgcSn);
+        roleInfo.setUpdDt(new Date());
+        roleInfo.setUpdUsrId(commonService.getCurrentUser().getLgcSn());
+        int update = roleService.updateByPrimaryKey(roleInfo);
+        if(update>0){
+            map.put("state", "true");
+        }else{
+            map.put("state", "false");
+        }
+        return map;
+    }
+}

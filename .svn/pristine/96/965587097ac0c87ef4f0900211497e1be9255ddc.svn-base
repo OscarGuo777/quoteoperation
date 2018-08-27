@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <title>Bootstrap 实例</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript"
+            th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/popper.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap-table.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap-table-zh-CN.js}"></script>
+    <script type="text/javascript" th:src="@{/js/moment-with-locales.js}"></script>
+    <!--toastr弹窗工具-->
+    <script type="text/javascript" th:src="@{/js/toastr.js}"></script>
+    <link type="text/css"  th:href="@{/css/toastr.css}" rel="stylesheet"/>
+    <link type="text/css"  th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+
+    <script type="application/javascript">
+        var vrsnSn="";
+        var upldLnk="";
+        var upldPwd="";
+         function add() {
+             window.location.href="/versionController/beforeedit";
+         }
+         function del(id){
+             if(window.confirm('你确定要删除吗？')){
+
+                 window.location.href="/versionController/delete?id="+id;
+             }else{
+                 return false;
+             }
+         }
+        function ts(obj,a,b){
+             //alert(obj+"--"+a+"---"+b);
+            vrsnSn=obj;
+            upldLnk=a;
+            upldPwd=b;
+            $("#addModal").modal("show");
+        }
+
+         function send(){
+             var group=$("#group").val();
+             if(window.confirm('你确定要推送？')){
+                 $.ajax({
+                     type: "POST",
+                     url: "/versionController/send",
+                     data: {vrsnSn: vrsnSn, upldLnk: upldLnk, upldPwd: upldPwd,group:group},
+                     // contentType: "application/json;charset=utf-8",
+                     dataType: "text",
+                     success: function (msg) {
+                         debugger
+                         toastr.info(msg);
+
+
+                     },
+                     error: function () {
+                         debugger
+                         toastr.error("发送失败!");
+                     }
+                 });
+             }else{
+                 return false;
+             }
+         }
+    </script>
+</head>
+<body>
+
+
+<div class="container">
+    <h2>版本号列表</h2>
+    <p>.table-bordered 类可以为表格添加边框:</p>
+    <div >
+        <form class="form-inline" th:action="@{/versionController/index}"  method="post" id="form" >
+
+
+            <label for="vrsnSn">版本号:</label>
+            <input type="text" class="form-control" id="vrsnSn" name="vrsnSn" placeholder="版本号" th:value="${vrsnSn}">
+            <input type="submit" class="btn btn-primary" value="查询">
+            <input type="button" class="btn btn-info" value="新增" onclick="add()">
+        </form>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>版本号</th>
+            <th>版本描述</th>
+            <th>状态</th>
+            <th>创建时间</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="m,stat:${list}" th:style="'background-color:'+@{${stat.odd}?'#F2F2F2'}">
+            <td th:text="${stat.count}"></td>
+            <td th:text="${m.vrsnSn}"></td>
+            <td th:text="${m.vrsnDesc}"></td>
+            <td th:if="${m.status} eq '1'">启用</td>
+            <td th:if="${m.status} eq '2'">未启用</td>
+            <td th:text=" ${#dates.format(m.crtDt,'yyyy-MM-dd')}"></td>
+
+
+            <td >
+                <a  th:href="@{'/versionController/beforeedit?lgcsn='+${m.lgcSn}}" th:if="${m.status} eq '2'">编辑</a>
+                <a href="#"  th:onclick="'javascript:del('+${m.lgcSn}+')'" th:if="${m.status} eq '2'" >删除</a>
+                <a th:href="@{'/versionController/qy?lgcsn='+${m.lgcSn}+'&status='+${m.status}}"   th:if="${m.status} eq '2'">启用</a>
+                <a th:href="@{'/versionController/qy?lgcsn='+${m.lgcSn}+'&status='+${m.status}}"   th:if="${m.status} eq '1'">停止启用</a>
+                <a href="#"  th:onclick="'javascript:ts(\''+${m.vrsnSn}+'\',\''+${m.upldLnk}+'\',\''+${m.upldPwd}+'\')'" th:if="${m.status} eq  '1'">推送</a>
+
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+
+
+
+<div class="modal fade" id="addModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+                <h4 class="modal-title">选择分组</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- 模态框主体 -->
+            <div class="modal-body">
+                <select  class="form-control" id="group" >
+                    <option th:each="group:${grouplist}"  th:value="${group.lgcSn}" th:text="${group.groupname}"></option>
+                </select>
+            </div>
+
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+                <button id="saveButton" type="button" class="btn btn-primary" data-dismiss="modal" onclick="send()">确定</button>
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
